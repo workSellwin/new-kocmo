@@ -56,7 +56,10 @@ return [
     ],
 ];
 /*
- * 178.159.45.82  SSH 2200
+ * 178. 159. 45. 82  SSH 2200
  * bitrix
  * qazWSX
+ *
+ * asdrubael@tut.by
+ * dfgY_ey^667tf
 */
