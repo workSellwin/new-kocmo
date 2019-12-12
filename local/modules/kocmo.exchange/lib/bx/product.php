@@ -333,7 +333,7 @@ class Product extends Helper
             }
         }
         //pr($parentId, 14);
-        pr($id, 14);
+        //pr($id, 14);
         //die('fff');
         return intval($id);
     }
