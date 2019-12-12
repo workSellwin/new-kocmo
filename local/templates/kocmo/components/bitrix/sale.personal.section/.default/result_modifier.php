@@ -72,9 +72,6 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
         'user-eye' => 'UF_EYE_COLOR',
         'user-skin' => 'UF_SKIN',
         'user-hair' => 'UF_HAIR',
-//        'user-old-pass' => 'NAME',
-//        'user-new-pass' => 'NAME',
-//        'user-confirm-pass' => 'NAME',
     ];
 
     foreach($_POST as $key => $value){
@@ -87,8 +84,38 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
             $userFields[$matches[$key]] = $value;
         }
     }
+
+    $by="id";
+    $order="desc";
+
+    if( !empty($userFields['EMAIL']) ){
+
+        $rsUsers = CUser::GetList($by, $order, ["!ID" => $USER->GetID(), "EMAIL" => $userFields['EMAIL']]);
+//pr($userFields,16);
+        if($ar = $rsUsers->fetch()){
+            if( strtolower($ar['EMAIL']) == strtolower($userFields['EMAIL']) ) {
+                $arResult['ERRORS'][] = 'Данный EMAIL уже зарегестрирован!';
+                unset($userFields['EMAIL']);
+            }
+        }
+    }
+
     if(!empty($userFields['PERSONAL_PHONE'])) {
         $userFields['PERSONAL_PHONE'] = getPreparePhone($userFields['PERSONAL_PHONE']);
+    }
+
+    if( !empty($userFields['PERSONAL_PHONE']) ){
+
+        $rsUsers = CUser::GetList($by, $order, ["!ID" => $USER->GetID(), "PERSONAL_PHONE" => $userFields['PERSONAL_PHONE']]);
+
+        if($ar = $rsUsers->fetch()){
+//            pr($ar['PERSONAL_PHONE'],16);
+//            pr($userFields['PERSONAL_PHONE'],16);
+            if( $ar['PERSONAL_PHONE'] == $userFields['PERSONAL_PHONE'] ) {
+                $arResult['ERRORS'][] = 'Данный телефон уже зарегестрирован!';
+                unset($userFields['PERSONAL_PHONE']);
+            }
+        }
     }
 
     $street = $userFields['PERSONAL_STREET_1'] ? $userFields['PERSONAL_STREET_1'] : "";

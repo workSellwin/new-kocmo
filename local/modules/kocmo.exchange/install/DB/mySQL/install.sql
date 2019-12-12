@@ -5,7 +5,7 @@ create table if not exists kocmo_exchange_data
 	JSON text        NOT NULL,
 	ENTRY varchar(36),
 	primary key (ID),
-	UNIQUE (UID)
+	UNIQUE KEY (UID, ENTRY)
 );
 
 create table if not exists kocmo_exchange_product_image

@@ -41,6 +41,10 @@ class Dbproduct extends Helper
             foreach ($this->prepareFieldsGen($arForDb) as $item) {
 
                 if($this->checkTime()){
+
+                    if( count($this->errors) ){
+                        file_put_contents( $_SERVER['DOCUMENT_ROOT'] . '/export-log.txt', print_r($this->errors, true), FILE_APPEND );
+                    }
                     return $last;
                 }
 
@@ -55,17 +59,23 @@ class Dbproduct extends Helper
                     unset($item['PARENT']);
 
                     $result = Exchange\DataTable::add($item);
+
                     if($result->isSuccess()){
                         $this->utils->setModuleData($this->arParams['PRODUCT_LAST_UID'], $item["UID"]);
                     }
-                    //pr($result, 14);return true;
+                    else{
+                        $this->errors[] = "false - " . $item["UID"] . "\n";
+                    }
+
                 } catch ( DB\SqlQueryException $e ){
-                    //например попытка добавить с не уникальным UID
-                    $this->errors[] = $e->getMessage();
+                    $this->errors[] = 'DB\SqlQueryException - ' . $e->getMessage();
                 }
             }
         }
         if($last === true){
+            if( count($this->errors) ){
+                file_put_contents( $_SERVER['DOCUMENT_ROOT'] . '/export-log.txt', print_r($this->errors, true), FILE_APPEND );
+            }
             $this->utils->setModuleData($this->arParams['PRODUCT_LAST_UID'], '');
             $this->status = 'end';
         }

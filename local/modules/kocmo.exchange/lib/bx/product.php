@@ -280,13 +280,10 @@ class Product extends Helper
             $oElement = new \CIBlockElement();
         }
 
-        $isOffer = false;
-
         if( empty($arFields["PROPERTY_VALUES"]["CML2_LINK"]) ){
             $prod = $this->getProductFromIBlock($arFields["XML_ID"]);
         }
         else{
-            $isOffer = true;
             $parentId = $arFields["PROPERTY_VALUES"]["CML2_LINK"];
             $tempVal = array_search($parentId, $this->productMatchXmlId);
 
@@ -312,7 +309,7 @@ class Product extends Helper
             if (intval($id) > 0) {
 
                 if (intval($rowId) > 0) {
-                    //$deleteResult = Exchange\DataTable::delete($rowId);
+                    $deleteResult = Exchange\DataTable::delete($rowId);
                 }
 
                 Catalog\Model\Product::add(['fields' => ['ID' => $id]]);//add to b_catalog_product
@@ -328,7 +325,7 @@ class Product extends Helper
                 $id = $prod;
 
                 if (intval($rowId) > 0) {
-                    //$deleteResult = Exchange\DataTable::delete($rowId);
+                    $deleteResult = Exchange\DataTable::delete($rowId);
                 }
             }
         }

@@ -47,9 +47,9 @@ function pageStart() {
 
                     document.querySelector('.success-message').style.display = "block";
 
-                    setTimeout(function () {
-                        location.href = '/user/profile/?login=yes';
-                    }, 2000);
+                    // setTimeout(function () {
+                    //     location.href = '/user/profile/?login=yes';
+                    // }, 2000);
                 }
             };
             xhr.send();
