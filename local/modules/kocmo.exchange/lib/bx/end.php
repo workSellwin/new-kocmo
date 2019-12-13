@@ -44,7 +44,7 @@ class End
 
             $elementsStatus = $this->utils->getElementsStatus(["IBLOCK_ID" => [2, 3]]);//все элементы с их статусами
             $productPrices = $this->utils->getElementPrices();//все элементы имеющие цены
-            $productQuantity = $this->utils->getProductsQuantity();//все товары с количеством
+            $productQuantity = $this->utils->getStoreProductsQuantity();//все товары с количеством
 
             $el = new \CIBlockElement();
 
@@ -128,11 +128,11 @@ class End
         }
     }
 
-//    public function updateAvailable()
-//    {
-//        $bx = new Rest();
-//        $bx->updateAvailable();
-//    }
+    public function updateAvailable()
+    {
+        $bx = new Rest();
+        $bx->updateAvailable();
+    }
 //
 //    public function activateElement()
 //    {
@@ -185,8 +185,24 @@ class End
 //        }
 //    }
 
-    public function activateProducts(){
-
-
-    }
+//    public function updateAvailable()
+//    {
+//
+//        $productAmount = $this->getProductAmount();
+//        $productQuantity = $this->utils->getProductsQuantity();
+//
+//        $obProduct = new \CCatalogProduct();
+//
+//        foreach ($productAmount as $id => $quantity) {
+//
+//            if ($quantity < 2) {
+//                $quantity = 0;
+//            }
+//
+//            if($quantity != $productQuantity[$id]){
+//                $productQuantity[$id] = $quantity;
+//                $obProduct->Update($id, ['QUANTITY' => $quantity]);
+//            }
+//        }
+//    }
 }
