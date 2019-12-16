@@ -24,7 +24,7 @@ function sendEmailSertifikat(){
 
 function SendEmailEGiftAgent($egift){
     $HtmlEmail = new EGift();
-    $HtmlEmail = $HtmlEmail->GetHtmlEmailOb($egift);
+    $HtmlEmail = $HtmlEmail->GetHtmlEmail($egift);
     $arEventFields = [
         "HTML"   => $HtmlEmail,
         "EMAIL_TO"  => $egift['PROPERTY']['EMAIL'],

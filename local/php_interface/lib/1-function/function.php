@@ -64,6 +64,10 @@ if (!function_exists("PR")) {
             $show = true;
         }
 
+        if ($UserId === true) {
+            $show = true;
+        }
+
         if ($die) {
             $APPLICATION->RestartBuffer();
         }
@@ -160,8 +164,7 @@ if (!function_exists("getDataMainTabsSlider")) {
                 'ID' => 'news',
                 'NAME' => 'Новинки',
                 'FILTER' => [
-                    'PROPERTY_STATUS_VALUE' => 'Новинка',
-                    'CATALOG_AVAILABLE' => 'Y'
+                    'PROPERTY_STATUS_VALUE' => 'Новинка'
                 ],
                 'ACTIVE' => 'active',
             ],
@@ -169,8 +172,7 @@ if (!function_exists("getDataMainTabsSlider")) {
                 'ID' => 'bestsellers',
                 'NAME' => 'Бестселлеры',
                 'FILTER' => [
-                    'PROPERTY_STATUS_VALUE' => 'Хит продаж',
-                    'CATALOG_AVAILABLE' => 'Y'
+                    'PROPERTY_STATUS_VALUE' => 'Хит продаж'
                 ],
                 'ACTIVE' => ''
             ],
@@ -178,8 +180,7 @@ if (!function_exists("getDataMainTabsSlider")) {
                 'ID' => 'only-cosmo',
                 'NAME' => 'Только в космо',
                 'FILTER' => [
-                    'PROPERTY_STATUS_VALUE' => 'Только в Космо',
-                    'CATALOG_AVAILABLE' => 'Y'
+                    'PROPERTY_STATUS_VALUE' => 'Только в Космо'
                 ],
                 'ACTIVE' => ''
             ],
@@ -258,5 +259,28 @@ if (!function_exists("getPreparePhone")) {
         } else {
             return false;
         }
+    }
+}
+
+if (!function_exists("getPreparePhone2")) {
+    //единый формат телефона на сайте
+    function getPreparePhone2($rawPhone)
+    {
+
+        $phone = getPreparePhone($rawPhone);
+        $phone = substr($phone, 3, 2)."-".substr($phone, 5, 3)."-".substr($phone, 8, 2)."-".substr($phone, 10, 2);
+        return $phone;
+    }
+}
+
+if (!function_exists("orderCreate")) {
+    //единый формат телефона на сайте
+    function orderCreate($event, $param)
+    {
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt1.txt', print_r($event, true));
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt2.txt', print_r($param, true));
+
+//        $obSmsService = new \CMlifeSmsServices();
+//        $arSend = $obSmsService->sendSms($phone, $message->getText(), 0, $this->author);
     }
 }

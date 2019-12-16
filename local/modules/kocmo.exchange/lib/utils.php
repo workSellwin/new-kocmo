@@ -184,4 +184,34 @@ class Utils
 
         return $productIds;
     }
+
+
+    public function getProductsId(array $xmlId){
+
+        $res = \CIBlockElement::GetList([], ["IBLOCK_ID" => [2, 3], "XML_ID" => $xmlId, '!SORT' => 988], false, false, ['ID', "XML_ID"]);
+        $products = [];
+
+        while($fields = $res->fetch() ){
+            $products[$fields['ID']] = $fields['XML_ID'];
+        }
+        return $products;
+    }
+
+
+    public function getProductsQuantity($limit = 1){
+
+        Loader::includeModule('catalog');
+
+        $iterator = \Bitrix\Catalog\StoreProductTable::getlist([
+            "filter" => [">AMOUNT" => $limit]
+        ]);
+
+        $productQuantity = [];
+
+        while($row = $iterator->fetch()){
+            $productQuantity[$row['PRODUCT_ID']] = true;
+        }
+
+        return $productQuantity;
+    }
 }

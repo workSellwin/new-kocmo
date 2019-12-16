@@ -93,6 +93,10 @@ class Rest extends Helper
         $arReq = $this->treeBuilder->getRequestArr();//product xml_id => store xml_id => count
         $arUid = array_keys($arReq);
         $this->products = $this->utils->getProductsId($arUid);
+
+//        echo (count($this->products, true) );
+//        die();
+
         $restIds = $this->getRestIds();
         $rowId = [];
 
