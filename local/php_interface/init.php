@@ -160,4 +160,4 @@ function OnSalePayOrderActionUpdateEGift($order_id, $status)
     }
 }
 
-AddEventHandler('sale', 'OnSaleComponentOrderCreated', 'orderCreate');
+AddEventHandler('sale', 'OnSaleComponentOrderOneStepComplete', 'orderCreate');

@@ -11,6 +11,10 @@ function _Check404Error()
     }
 }*/
 
+use Bitrix\Main\Sms\Message;
+use Bitrix\Main\Sms\TemplateTable;
+use Bitrix\Sale\Order;
+
 function number_format_kocmo($float)
 {
     return number_format($float, 2, '.', ' ');
@@ -274,13 +278,80 @@ if (!function_exists("getPreparePhone2")) {
 }
 
 if (!function_exists("orderCreate")) {
-    //единый формат телефона на сайте
-    function orderCreate($event, $param)
-    {
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt1.txt', print_r($event, true));
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt2.txt', print_r($param, true));
 
-//        $obSmsService = new \CMlifeSmsServices();
-//        $arSend = $obSmsService->sendSms($phone, $message->getText(), 0, $this->author);
+    function orderCreate($orderId, $orderFields /*Bitrix\Sale\Order $order, $param*/)
+    {
+
+        if(!$orderId){
+            return false;
+        }
+        if (!\CModule::IncludeModule('mlife.smsservices')) {
+            return false;
+        }
+
+        $courierDelivery = [2, 4];
+        $pickupDelivery = [3];
+        $courierEvent = 'SMS_ORDER_COURIER';
+        $pickupEvent = 'SMS_ORDER_PICKUP';
+        $messages = [];
+        $order = Bitrix\Sale\Order::loadByAccountNumber($orderId);
+        $propertyCollection = $order->getPropertyCollection();
+        $phonePropValue = $propertyCollection->getPhone();
+
+        if($phonePropValue){
+            $phone = $propertyCollection->getPhone()->getValue();
+        }
+        else{
+            return false;
+        }
+
+
+        if( in_array($orderFields['DELIVERY_ID'], $courierDelivery) ){
+
+            $DELIVERY_DATA = $propertyCollection->getItemByOrderPropertyId(21);
+            $DELIVERY_INTERVAL = $propertyCollection->getItemByOrderPropertyId(23);
+
+            $messages = getSmsMessages($courierEvent, [
+                'ORDER_ID' => $order->getId(),
+                'SUM' => $order->getPrice(),
+                'DELIVERY_DATA' => $DELIVERY_DATA->getViewHtml(),
+                'DELIVERY_INTERVAL' => $DELIVERY_INTERVAL->getViewHtml(),
+            ]);
+        }
+        elseif( in_array($orderFields['DELIVERY_ID'], $pickupDelivery) ){
+            $messages = getSmsMessages($pickupEvent, [
+                'ORDER_ID' => $order->getId(),
+                'SUM' => $order->getPrice(),
+            ]);
+        }
+
+        if(count($messages)){
+            $obSmsService = new \CMlifeSmsServices();
+
+            foreach($messages as $message){
+                $arSend = $obSmsService->sendSms($phone, $message->getText());
+            }
+        }
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt3.txt', print_r($messages, true) . "\n", FILE_APPEND);
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt4.txt', print_r($arSend, true) . "\n", FILE_APPEND);
+    }
+}
+
+if(!function_exists("getSmsMessages")){
+
+    function getSmsMessages($eventName, array $param = []){
+
+        $templates = Bitrix\Main\Sms\TemplateTable::getList([
+                'select' => ['*', 'SITES.SITE_NAME', 'SITES.SERVER_NAME', 'SITES.LID'],
+                'filter' => ['EVENT_NAME' => $eventName]]
+        )->fetchCollection();
+
+        $messages = [];
+
+        foreach($templates as $template)
+        {
+            $messages[] = Bitrix\Main\Sms\Message::createFromTemplate($template, $param);
+        }
+        return $messages;
     }
 }

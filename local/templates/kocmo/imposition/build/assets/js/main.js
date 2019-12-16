@@ -577,6 +577,7 @@ var MainJs = {
         this.setImageSrc($imagesCollection);
 
         new Swiper(this.fullWidthSlider, {
+            effect:'cube',
             wrapperClass: 'full-width-slider__wrapper',
             slidesPerView: 1,
             loop: true,
@@ -597,6 +598,10 @@ var MainJs = {
                 }
             }
         });
+
+        setInterval(function () {
+            $('.full-width-slider__next').trigger('click');
+        }, 5000);
     },
 
     mobileScrollSliderInit: function mobileScrollSliderInit() {
@@ -962,6 +967,7 @@ var MainJs = {
             $slider;
 
         $(document).on('click', this.tabBtn, function () {
+            console.log(this.tabBtn);
             $(this).closest(_this.tabWrapper).find(_this.tabBtn + ', ' + _this.tabInner).removeClass('active');
 
             $(this).addClass('active').closest(_this.tabWrapper).find('div[data-id="' + $(this).attr('data-id') + '"]').addClass('active');

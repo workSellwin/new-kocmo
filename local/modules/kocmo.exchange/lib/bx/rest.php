@@ -21,17 +21,17 @@ class Rest extends Helper
 
         $treeBuilder = new \Kocmo\Exchange\Tree\Rest();
         parent::__construct($treeBuilder);
-        $this->stores = $this->getStores();
-        $storeXmlId = $this->setCurStore();
-
-        if (!empty($storeXmlId) && $this->utils->checkRef($storeXmlId) && in_array($storeXmlId, $this->stores)) {
-
-            $this->storeXmlId = $storeXmlId;
-            $this->treeBuilder->setStoreRest($storeXmlId);
-        } else {
-            $this->storeXmlId = false;
-            throw new \Exception("store not found!");
-        }
+//        $this->stores = $this->getStores();
+//        $storeXmlId = $this->setCurStore();
+//
+//        if (!empty($storeXmlId) && $this->utils->checkRef($storeXmlId) && in_array($storeXmlId, $this->stores)) {
+//
+//            $this->storeXmlId = $storeXmlId;
+//            $this->treeBuilder->setStoreRest($storeXmlId);
+//        } else {
+//            $this->storeXmlId = false;
+//            throw new \Exception("store not found!");
+//        }
     }
 
     private function setCurStore()
@@ -82,8 +82,26 @@ class Rest extends Helper
         }
     }
 
-    public function update(): bool
+    public function update($full = true, array $exchangeData = []): bool
     {
+
+        $this->stores = $this->getStores();
+
+        if($full) {
+            $storeXmlId = $this->setCurStore();
+
+            if (!empty($storeXmlId) && $this->utils->checkRef($storeXmlId) && in_array($storeXmlId, $this->stores)) {
+
+                $this->storeXmlId = $storeXmlId;
+                $this->treeBuilder->setStoreRest($storeXmlId);
+            } else {
+                $this->storeXmlId = false;
+                throw new \Exception("store not found!");
+            }
+        }
+        else{
+            $this->treeBuilder->setRest($exchangeData);
+        }
 
 //        if ($this->storeXmlId === false) {
 //            $this->updateAvailable();
@@ -94,10 +112,12 @@ class Rest extends Helper
         $arUid = array_keys($arReq);
         $this->products = $this->utils->getProductsId($arUid);
 
-//        echo (count($this->products, true) );
-//        die();
-
-        $restIds = $this->getRestIds();
+        if($full) {
+            $restIds = $this->getRestIds();
+        }
+        else{
+            $restIds = $this->getRestIds(["PRODUCT_ID" => array_keys($this->products)]);
+        }
         $rowId = [];
 
         foreach ($this->products as $id => $xml_id) {
@@ -120,20 +140,20 @@ class Rest extends Helper
 
                         } else {
 
-                            $result = Catalog\StoreProductTable::add([
-                                "PRODUCT_ID" => $id,
-                                "AMOUNT" => $amount,
-                                "STORE_ID" => array_search($storeXmlId, $this->stores)
-                            ]);
+//                            $result = Catalog\StoreProductTable::add([
+//                                "PRODUCT_ID" => $id,
+//                                "AMOUNT" => $amount,
+//                                "STORE_ID" => array_search($storeXmlId, $this->stores)
+//                            ]);
                         }
 
-                        if ($result->isSuccess()) {
-
-                            $rowId[] = $result->getId();
-                        }
-                        else{
-                            pr($id, 14);
-                        }
+//                        if ($result->isSuccess()) {
+//
+//                            $rowId[] = $result->getId();
+//                        }
+//                        else{
+//                            pr($id, 14);
+//                        }
                     } catch (DB\SqlQueryException $e) {
                         //уже есть
                     } catch (\Exception $e) {
@@ -154,6 +174,17 @@ class Rest extends Helper
         }
 
         return true;
+    }
+
+    public function updateFrom1C( array $data ){
+
+        if(!count($data)){
+            return false;
+        }
+
+        $stores = $this->getStores();
+
+
     }
 
     private function getStores($xml_id = false)
@@ -177,23 +208,30 @@ class Rest extends Helper
         return $stores;
     }
 
-    private function getRestIds()
+    private function getRestIds($filter = false)
     {
 
         $storeProducts = [];
 
-        try {
+        if( !is_array($filter) ){
 
             if( empty($this->curStore) ){
                 return $storeProducts;
             }
-            $iterator = Catalog\StoreProductTable::getlist( ['filter' => ['STORE_ID' => $this->curStore]] );
+
+            $filter = ['STORE_ID' => $this->curStore];
+        }
+
+        try {
+            $iterator = Catalog\StoreProductTable::getlist( ['filter' => $filter] );
 
             while ( $row = $iterator->fetch() ) {
 
                 $productXmlId = $this->products[$row['PRODUCT_ID']];
+
                 if( !empty($productXmlId) ) {
-                    $storeProducts[$productXmlId][$this->storeXmlId] = $row['ID'];
+                    $storeXmlId = $this->stores[$row['STORE_ID']];
+                    $storeProducts[$productXmlId][$storeXmlId] = $row['ID'];
                 }
             }
         } catch (\Exception $e) {

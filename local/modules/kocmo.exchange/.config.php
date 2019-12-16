@@ -44,8 +44,8 @@ return [
         'PROD_POINT_OF_ENTRY' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetCatalog',
         'OFFERS_POINT_OF_ENTRY' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetOffers',
         'SECT_POINT_OF_ENTRY' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetSections/',
-        'GET_IMAGE_URI' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetImage/',//
-        'REFERENCE_URL' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetReference/',//
+        'GET_IMAGE_URI' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetImage/',
+        'REFERENCE_URL' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetReference/',
         'TYPE_PRICE_ENTRY' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetReference/42d10808-9ccb-11e8-a215-00505601048d/',
         'PRICE_ENTRY' => 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetPrice/',
         'STORE_ENTRY' => 'http://1c.kocmo.by/Kocmo/hs/Kocmo/GetReference/42d1082d-9ccb-11e8-a215-00505601048d',

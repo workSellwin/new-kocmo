@@ -6,6 +6,20 @@ use Kocmo\Exchange\Bx;
 
 final class StaticFactory
 {
+    static $stages = [
+//        'section' => 0,
+//        'property' => 10,
+//        'dbproduct' => 20,
+        'product' => 30,
+//        'offer' => 40,
+//        'store' => 50,
+        'rest' => 60,
+//        'typeprice' => 70,
+        'price' => 80,
+//        'Image' => 90,
+//        'end' => 100,
+    ];
+
     static function factory($stage = '0'){
 
         switch($stage){
@@ -46,5 +60,15 @@ final class StaticFactory
 
     static function nextStep($step){
         return $step + 10;
+    }
+
+    static function getActionStage(string $action){
+
+        $action = strtolower($action);
+
+        if(isset(self::$stages[$action])) {
+            return self::$stages[$action];
+        }
+        return false;
     }
 }
