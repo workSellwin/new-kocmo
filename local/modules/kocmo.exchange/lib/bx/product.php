@@ -10,7 +10,6 @@ namespace Kocmo\Exchange\Bx;
 
 use \Bitrix\Catalog,
     \Kocmo\Exchange,
-    \Bitrix\Main,
     \Bitrix\Main\DB;
 
 class Product extends Helper
@@ -71,23 +70,21 @@ class Product extends Helper
 
         if ($end) {
             $this->status = 'end';
-            //$connection = Main\Application::getConnection();
-            //$connection->truncateTable(Exchange\DataTable::getTableName());
         } else {
             $this->status = 'run';
         }
         return $end;
     }
 
-    public function updateOne($arProduct)
+    public function updateOne($json)
     {
 
         $this->setMatchXmlId();
         $sectionsMatch = $this->getAllSectionsXmlId();
         $this->setEnumMatch();
 
-        $row = json_decode($arProduct['JSON'], true);
-
+        $row = json_decode($json, true)[0];
+        $row = $this->treeBuilder->prepareItem($row);
         $props = [];
 
         if (count($row[$this->arParams['PROPERTIES']])) {
@@ -146,6 +143,7 @@ class Product extends Helper
         $id = 0;
 
         try {
+            pr($arFields, 14);
             $id = $this->addProduct($arFields);
         } catch (\Exception $e) {
             $this->errors[] = $e;

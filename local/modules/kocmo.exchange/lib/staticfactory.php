@@ -2,7 +2,8 @@
 
 
 namespace Kocmo\Exchange;
-use Kocmo\Exchange\Bx;
+use Kocmo\Exchange\Bx,
+    Kocmo\Exchange\Import;
 
 final class StaticFactory
 {
@@ -10,7 +11,7 @@ final class StaticFactory
 //        'section' => 0,
 //        'property' => 10,
 //        'dbproduct' => 20,
-        'product' => 30,
+        'product' => 200,
 //        'offer' => 40,
 //        'store' => 50,
         'rest' => 60,
@@ -52,6 +53,9 @@ final class StaticFactory
                 break;
             case '90':
                 return new Bx\Image();
+                break;
+            case '200':
+                return new Import\Product();
                 break;
             default:
                 return new Bx\End();

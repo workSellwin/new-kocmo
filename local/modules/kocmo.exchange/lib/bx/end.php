@@ -114,7 +114,7 @@ class End
             }
 
             $el = new \CIBlockElement;
-
+//pr($brandsElem, 14);
             foreach ($brandsElem as $enumXmlId => $brandId) {
 
                 if (isset($brandsEnum[$enumXmlId])) {

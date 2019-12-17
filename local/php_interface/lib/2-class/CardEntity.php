@@ -6,7 +6,7 @@ class UserDiscount
     protected $reqData = null;
     protected $arData = null;
     protected $serviceUrl = '';
-    private $getCartDiscountUrl = 'http://kocmo1c.sellwin.by/Kosmo_Sergey/hs/Kocmo/GetCardDiscount?id=';
+    private $getCartDiscountUrl = 'http://1c.kocmo.by/kocmo/hs/Kocmo/GetCardDiscount?id=';
     private $userData = null;
     private $actionObj = null;
 

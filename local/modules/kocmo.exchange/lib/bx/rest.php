@@ -140,20 +140,20 @@ class Rest extends Helper
 
                         } else {
 
-//                            $result = Catalog\StoreProductTable::add([
-//                                "PRODUCT_ID" => $id,
-//                                "AMOUNT" => $amount,
-//                                "STORE_ID" => array_search($storeXmlId, $this->stores)
-//                            ]);
+                            $result = Catalog\StoreProductTable::add([
+                                "PRODUCT_ID" => $id,
+                                "AMOUNT" => $amount,
+                                "STORE_ID" => array_search($storeXmlId, $this->stores)
+                            ]);
                         }
 
-//                        if ($result->isSuccess()) {
-//
-//                            $rowId[] = $result->getId();
-//                        }
-//                        else{
-//                            pr($id, 14);
-//                        }
+                        if ($result->isSuccess()) {
+
+                            $rowId[] = $result->getId();
+                        }
+                        else{
+                            pr($id, 14);
+                        }
                     } catch (DB\SqlQueryException $e) {
                         //уже есть
                     } catch (\Exception $e) {

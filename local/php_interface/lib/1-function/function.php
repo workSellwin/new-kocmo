@@ -283,10 +283,10 @@ if (!function_exists("orderCreate")) {
     {
 
         if(!$orderId){
-            return false;
+            return true;
         }
         if (!\CModule::IncludeModule('mlife.smsservices')) {
-            return false;
+            return true;
         }
 
         $courierDelivery = [2, 4];
@@ -302,7 +302,7 @@ if (!function_exists("orderCreate")) {
             $phone = $propertyCollection->getPhone()->getValue();
         }
         else{
-            return false;
+            return true;
         }
 
 
