@@ -76,15 +76,17 @@ class Product extends Helper
         return $end;
     }
 
-    public function updateOne($json)
+    public function updateOne($row)
     {
 
         $this->setMatchXmlId();
         $sectionsMatch = $this->getAllSectionsXmlId();
         $this->setEnumMatch();
 
-        $row = json_decode($json, true)[0];
+        //$row = json_decode($json, true);
         $row = $this->treeBuilder->prepareItem($row);
+//        pr($row, 50);
+//        die();
         $props = [];
 
         if (count($row[$this->arParams['PROPERTIES']])) {
@@ -143,7 +145,7 @@ class Product extends Helper
         $id = 0;
 
         try {
-            pr($arFields, 14);
+            //pr($arFields, 50);
             $id = $this->addProduct($arFields);
         } catch (\Exception $e) {
             $this->errors[] = $e;
