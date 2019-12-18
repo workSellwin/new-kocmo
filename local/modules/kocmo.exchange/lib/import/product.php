@@ -11,7 +11,7 @@ class Product
 
     }
 
-    public function update($full = true, $param = []) : bool{
+    public function update($param = []) : bool{
 
         if(!is_array($param)){
             return false;

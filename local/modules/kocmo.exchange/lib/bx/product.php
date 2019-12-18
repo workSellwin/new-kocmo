@@ -83,10 +83,8 @@ class Product extends Helper
         $sectionsMatch = $this->getAllSectionsXmlId();
         $this->setEnumMatch();
 
-        //$row = json_decode($json, true);
         $row = $this->treeBuilder->prepareItem($row);
-//        pr($row, 50);
-//        die();
+
         $props = [];
 
         if (count($row[$this->arParams['PROPERTIES']])) {
@@ -145,7 +143,6 @@ class Product extends Helper
         $id = 0;
 
         try {
-            //pr($arFields, 50);
             $id = $this->addProduct($arFields);
         } catch (\Exception $e) {
             $this->errors[] = $e;
@@ -329,9 +326,6 @@ class Product extends Helper
                 }
             }
         }
-        //pr($parentId, 14);
-        //pr($id, 14);
-        //die('fff');
         return intval($id);
     }
 

@@ -7,16 +7,14 @@ use Kocmo\Exchange\Bx,
 
 final class StaticFactory
 {
-    static $stages = [
-//        'section' => 0,
+    static $ImportStages = [
+        'section' => 200,
 //        'property' => 10,
-//        'dbproduct' => 20,
-        'product' => 200,
-//        'offer' => 40,
+        'product' => 230,
 //        'store' => 50,
-        'rest' => 60,
+        'rest' => 260,
 //        'typeprice' => 70,
-        'price' => 80,
+        'price' => 280,
 //        'Image' => 90,
 //        'end' => 100,
     ];
@@ -54,8 +52,14 @@ final class StaticFactory
             case '90':
                 return new Bx\Image();
                 break;
-            case '200':
+            case '230':
                 return new Import\Product();
+                break;
+            case '260':
+                return new Import\Rest();
+                break;
+            case '280':
+                return new Import\Price();
                 break;
             default:
                 return new Bx\End();
@@ -70,8 +74,8 @@ final class StaticFactory
 
         $action = strtolower($action);
 
-        if(isset(self::$stages[$action])) {
-            return self::$stages[$action];
+        if(isset(self::$ImportStages[$action])) {
+            return self::$ImportStages[$action];
         }
         return false;
     }
