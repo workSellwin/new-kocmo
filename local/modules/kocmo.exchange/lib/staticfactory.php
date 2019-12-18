@@ -52,6 +52,12 @@ final class StaticFactory
             case '90':
                 return new Bx\Image();
                 break;
+            case '100':
+                return new Bx\End();
+                break;
+            case '200':
+                return new Import\Section();
+                break;
             case '230':
                 return new Import\Product();
                 break;
@@ -61,8 +67,6 @@ final class StaticFactory
             case '280':
                 return new Import\Price();
                 break;
-            default:
-                return new Bx\End();
         }
     }
 

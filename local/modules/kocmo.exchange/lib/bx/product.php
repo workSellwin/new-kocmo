@@ -123,7 +123,7 @@ class Product extends Helper
         }
 
         $arFields = array(
-            "ACTIVE" => "Y",
+            //"ACTIVE" => "Y",
             "IBLOCK_ID" => $this->catalogId,
             "IBLOCK_SECTION" => $arrIblockSectionId,
             "XML_ID" => $row[$this->arParams['ID']],
@@ -316,7 +316,7 @@ class Product extends Helper
 
         }
         else {
-
+            unset($arFields["CODE"]);
             if ($oElement->Update($prod, $arFields)) {
 
                 $id = $prod;

@@ -21,10 +21,10 @@ class Base
     }
 
     /**
-     * @param array $errors
+     * @param $error
      */
-    public function setErrors(array $errors)
+    public function setError($error)
     {
-        $this->errors = $errors;
+        $this->errors[] = $error;
     }
 }

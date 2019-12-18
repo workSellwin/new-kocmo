@@ -23,11 +23,11 @@ $PROP = array_column($arResult['PROPERTIES'], 'VALUE', 'CODE');
         </div>
 
         <div class="sale__date">
-            <?= $PROP['TEXT'] ?>
+            <?//= $PROP['TEXT'] ?>
         </div>
 
         <div class="sale__article">
-            <?= $arResult['DETAIL_TEXT'] ?>
+            <?//= $arResult['DETAIL_TEXT'] ?>
         </div>
 
         <h2 class="sale__title">товары на акции</h2>
@@ -74,9 +74,9 @@ $PROP = array_column($arResult['PROPERTIES'], 'VALUE', 'CODE');
         ); ?>
 
 
-        <div class="category-filter-active-fields-wrap">
+       <!-- <div class="category-filter-active-fields-wrap">
             <div class="container js_category-filter-active-fields"></div>
-        </div>
+        </div>-->
 
         <div id="AJAX_FILTER_CONTAINER">
             <?
@@ -84,11 +84,66 @@ $PROP = array_column($arResult['PROPERTIES'], 'VALUE', 'CODE');
                 $GLOBALS['APPLICATION']->RestartBuffer();
             }
 
+            if(isset($_REQUEST['available_not']) && $_REQUEST['available_not'] == 'y'){
+                $filter_sales_prod['CATALOG_AVAILABLE'] = 'N';
+            }
+
+            if(isset($_REQUEST['available_yes']) && $_REQUEST['available_yes'] == 'y'){
+                $filter_sales_prod['CATALOG_AVAILABLE'] = 'Y';
+            }
+
+            if((isset($_REQUEST['available_not']) && $_REQUEST['available_not'] == 'y') && (isset($_REQUEST['available_yes']) && $_REQUEST['available_yes'] == 'y')){
+                unset($filter_sales_prod['CATALOG_AVAILABLE']);
+            }
+
+
+            //сортировка
+            if(isset($_REQUEST['filter_sort']) && !empty($_REQUEST['filter_sort'])){
+                if($_REQUEST['filter_sort'] == 'price_asc'){
+                    $ELEMENT_SORT_FIELD = 'catalog_PRICE_2';
+                    $ELEMENT_SORT_ORDER = 'asc';
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+                    $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'price_asc';
+                }
+                if($_REQUEST['filter_sort'] == 'price_desc'){
+                    $ELEMENT_SORT_FIELD = 'catalog_PRICE_2';
+                    $ELEMENT_SORT_ORDER = 'desc';
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+                    $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'price_desc';
+                }
+                if($_REQUEST['filter_sort'] == 'az_asc'){
+                    $ELEMENT_SORT_FIELD = 'name';
+                    $ELEMENT_SORT_ORDER = 'asc';
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+                    $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'az_asc';
+                }
+                if($_REQUEST['filter_sort'] == 'az_desc'){
+                    $ELEMENT_SORT_FIELD = 'name';
+                    $ELEMENT_SORT_ORDER = 'desc';
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+                    $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+                    $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'az_desc';
+                }
+
+            }else{
+                $ELEMENT_SORT_FIELD = isset($_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD']) && !empty($_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD']) ? $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] : 'name' ;
+                $ELEMENT_SORT_ORDER = isset($_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER']) && !empty($_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER']) ? $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] : 'asc' ;
+                $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = isset($_SESSION['FILTER_SORT']['SELECT_FILTER_SORT']) && !empty($_SESSION['FILTER_SORT']['SELECT_FILTER_SORT']) ? $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] : 'az_asc' ;
+            }
+
+
 
             $filter_sales_prod = array_merge($filter_sales_prod, array('ID' => $PROP['PROD']));
+
+
+
+
             $APPLICATION->IncludeComponent(
                 "bitrix:catalog.section",
-                "sales_prod",
+                "section",//"sales_prod",
                 array(
                     "ACTION_VARIABLE" => "action",
                     "ADD_PICT_PROP" => "",
@@ -119,10 +174,10 @@ $PROP = array_column($arResult['PROPERTIES'], 'VALUE', 'CODE');
                     "DISPLAY_BOTTOM_PAGER" => "Y",
                     "DISPLAY_COMPARE" => "Y",
                     "DISPLAY_TOP_PAGER" => "N",
-                    "ELEMENT_SORT_FIELD" => "name",
-                    "ELEMENT_SORT_FIELD2" => "name",
-                    "ELEMENT_SORT_ORDER" => isset($_REQUEST['filter_sort']) && $_REQUEST['filter_sort'] == 'sort_increase' ? "asc" : "desc" ,
-                    "ELEMENT_SORT_ORDER2" => isset($_REQUEST['filter_sort']) && $_REQUEST['filter_sort'] == 'sort_increase' ? "asc" : "desc" ,
+                    "ELEMENT_SORT_FIELD" => $ELEMENT_SORT_FIELD,
+                    //"ELEMENT_SORT_FIELD2" => "name",
+                    "ELEMENT_SORT_ORDER" => $ELEMENT_SORT_ORDER,
+                    //"ELEMENT_SORT_ORDER2" => isset($_REQUEST['filter_sort']) && $_REQUEST['filter_sort'] == 'sort_increase' ? "asc" : "desc" ,
                     "ENLARGE_PRODUCT" => "STRICT",
                     "FILTER_NAME" => "filter_sales_prod",
                     "HIDE_NOT_AVAILABLE" => "L",
