@@ -2,10 +2,12 @@
 
 
 namespace Kocmo\Exchange\Support;
-use Kocmo\Exchange\Interfaces;
+use Kocmo\Exchange\Interfaces,
+    Kocmo\Exchange\Utils;
 
 class Config implements Interfaces\Config
 {
+    private $utils;
     private $space = null;
     private $data = [
         "bx" => [
@@ -64,9 +66,14 @@ class Config implements Interfaces\Config
         ],
     ];
 
+    private $moduleOptions = [
+        "IBLOCK_CATALOG_ID" => "exchange-catalog_id",
+    ];
+
     function __construct(string $space)
     {
         $this->space = $space;
+        $this->utils = new Utils();
     }
 
     function getConfig(){
@@ -76,6 +83,13 @@ class Config implements Interfaces\Config
         }
         else{
             return false;
+        }
+    }
+
+    private function setConfigFromModuleOptions(){
+
+        foreach( $this->moduleOptions as $key => $option ){
+            $this->data[$key] = $this->utils->getModuleData($option);
         }
     }
 }
