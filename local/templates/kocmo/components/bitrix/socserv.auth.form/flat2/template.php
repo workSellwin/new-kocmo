@@ -92,5 +92,5 @@ foreach ($arPost as $key => $value) {
         </div>
     </div>
 
-    <a href="#" class="form-login__soc-footer-lnk link">Как это работает?</a>
+    <?//<a href="#" class="form-login__soc-footer-lnk link">Как это работает?</a>?>
 </div>

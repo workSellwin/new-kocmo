@@ -6,7 +6,7 @@ use Lui\Kocmo\IncludeComponent as Component;
 use Lui\Kocmo\PropertyPage;
 
 $redirects = include $_SERVER['DOCUMENT_ROOT'] . '/include/redirects.php';
-
+//pr( $redirects, 14);
 $url = $_SERVER['REQUEST_URI'];
 $pos = strpos($_SERVER['REQUEST_URI'], '?');
 
@@ -17,8 +17,7 @@ else{
     $url = substr($_SERVER['REQUEST_URI'], 0, $pos);
 }
 
-if($redirects[ $url ]){
-   //pr( $_SERVER['SERVER_NAME'] . $redirects[$url], 14);
+if($redirects[ $url ] && false){
     header('Location: ' . 'http://' . $_SERVER['SERVER_NAME'] . $redirects[$url] );
     exit;
 }
@@ -43,12 +42,14 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
     <meta name="format-detection" content="telephone=no">
     <meta name="format-detection" content="address=no">
     <title><? $APPLICATION->ShowTitle() ?></title>
+
+
 <script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	
+
 	  ga('create', 'UA-117911007-1', 'auto');
 	  ga('require', 'displayfeatures');
 	  ga('send', 'pageview');
@@ -246,7 +247,7 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
             <a href="tel:+375296665544" class="mobile-nav__phone">626-14-14</a>
             <div>
                 <div class="mobile-nav__contacts-title">Горячая линия</div>
-                <div class="mobile-nav__contacts-schedule">ежедневно с 9:00 до 21:00</div>
+                <div class="mobile-nav__contacts-schedule">ежедневно с 9:00 до 19:00</div>
             </div>
         </div>
         <div class="mobile-nav__loc-wrap">
