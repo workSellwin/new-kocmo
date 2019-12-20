@@ -6,6 +6,8 @@ use \Kocmo\Exchange;
 
 class Product extends Base
 {
+    private $queueLimit = 100;
+
     public function __construct()
     {
         parent::__construct();
@@ -14,10 +16,16 @@ class Product extends Base
     public function update($param = []) : bool {
 
         if(!is_array($param)){
+            $this->setError("Invalid data format");
             return false;
         }
 
         if( isset($param[0]) && gettype($param[0]) === 'string' ){
+
+            if( count($param) > $this->queueLimit ){
+                $this->setError("Maximum queue limit exceeded");
+                return false;
+            }
 
             foreach($param as $xmlId) {
                 $tree = new Exchange\Tree\Product(['UID' => $xmlId, 'PRODUCT_LIMIT' => 1]);

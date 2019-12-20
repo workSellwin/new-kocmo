@@ -152,7 +152,7 @@ class Rest extends Helper
         }
 
         if ($full) {
-            //$this->clearOldRest($rowId);
+            $this->clearOldRest($rowId);
             $this->nextStore();
             $lastStoreId = $this->utils->getModuleData($this->arParams['LAST_STORE_ID']);
 
@@ -350,5 +350,18 @@ class Rest extends Helper
                 Catalog\StoreProductTable::delete($rest);
             }
         }
+    }
+
+    public function actualizeStock(){
+
+        $this->utils->setModuleData('LAST_STORE_ID', '17');
+        $this->update();
+        $this->utils->setModuleData('LAST_STORE_ID', '35');
+        $this->update();
+        $this->utils->setModuleData('LAST_STORE_ID', '');
+        $this->updateAvailable();
+
+        $bx = \Kocmo\Exchange\StaticFactory::factory(100);
+        $bx->updateElementStatus();
     }
 }
