@@ -39,7 +39,6 @@ class Price extends Helper
             false,
             ['ID', 'XML_ID']
         );
-
         $elementsId = [];
 
         while($fields = $res->fetch()){

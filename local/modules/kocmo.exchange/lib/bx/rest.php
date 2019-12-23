@@ -234,25 +234,40 @@ class Rest extends Helper
     public function updateAvailable()
     {
 
-        $productAmount = $this->getProductAmount();
+        $productAmount = $this->getProductAmount();//по 17 и 35 магазину
         $productQuantity = $this->utils->getCatalogQuantity();
 
         $obProduct = new \CCatalogProduct();
 
-        foreach ($productAmount as $id => $quantity) {
+        foreach ($productQuantity as $id => $quantity) {
 
-            if ($quantity < 2) {
-                $quantity = 0;
+            if( isset($productAmount[$id]) ){//есть в магазинах
+
+                if ($quantity != $productAmount[$id]) {
+                    $obProduct->Update($id, ['QUANTITY' => $productAmount[$id]]);
+                }
             }
-
-            if( !isset($productQuantity[$id]) ){
-                $productQuantity[$id] = 0;
-            }
-
-            if($quantity != $productQuantity[$id]){
-                $obProduct->Update($id, ['QUANTITY' => $quantity]);
+            else{
+                if ($quantity != 0) {
+                    $obProduct->Update($id, ['QUANTITY' => 0]);
+                }
             }
         }
+
+//        foreach ($productAmount as $id => $quantity) {
+//
+//            if ($quantity < 2) {
+//                $quantity = 0;
+//            }
+//
+//            if( !isset($productQuantity[$id]) ){
+//                $productQuantity[$id] = 0;
+//            }
+//
+//            if($quantity != $productQuantity[$id]){
+//                $obProduct->Update($id, ['QUANTITY' => $quantity]);
+//            }
+//        }
     }
 
     public function getProductAmount(){
@@ -272,17 +287,17 @@ class Rest extends Helper
                 if($row['AMOUNT'] > 1){
                     $productAmount[$row['PRODUCT_ID']] += $row['AMOUNT'];
                 }
-                else{
-                    $productAmount[$row['PRODUCT_ID']] += 0;
-                }
+//                else{
+//                    $productAmount[$row['PRODUCT_ID']] += 0;
+//                }
 
             } else {
                 if($row['AMOUNT'] > 1) {
                     $productAmount[$row['PRODUCT_ID']] = $row['AMOUNT'];
                 }
-                else{
-                    $productAmount[$row['PRODUCT_ID']] += 0;
-                }
+//                else{
+//                    $productAmount[$row['PRODUCT_ID']] += 0;
+//                }
             }
         }
         return $productAmount;
