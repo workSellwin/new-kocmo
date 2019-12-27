@@ -245,29 +245,39 @@ class Rest extends Helper
 
                 if ($quantity != $productAmount[$id]) {
                     $obProduct->Update($id, ['QUANTITY' => $productAmount[$id]]);
+
+                    $event = new \Bitrix\Main\Event(
+                        "kocmo.exchange",
+                        "OnAfterElemUpdateQuantity",
+                        [
+                            'ID' => $id,
+                            'QUANTITY' => $productAmount[$id],
+                            'QUANTITY_OLD' => $quantity
+                        ]
+                    );
+
+                    $event->send();
                 }
             }
             else{
+
                 if ($quantity != 0) {
                     $obProduct->Update($id, ['QUANTITY' => 0]);
+
+                    $event = new \Bitrix\Main\Event(
+                        "kocmo.exchange",
+                        "OnAfterElemUpdateQuantity",
+                        [
+                            'ID' => $id,
+                            'QUANTITY' => 0,
+                            'QUANTITY_OLD' => $quantity
+                        ]
+                    );
+
+                    $event->send();
                 }
             }
         }
-
-//        foreach ($productAmount as $id => $quantity) {
-//
-//            if ($quantity < 2) {
-//                $quantity = 0;
-//            }
-//
-//            if( !isset($productQuantity[$id]) ){
-//                $productQuantity[$id] = 0;
-//            }
-//
-//            if($quantity != $productQuantity[$id]){
-//                $obProduct->Update($id, ['QUANTITY' => $quantity]);
-//            }
-//        }
     }
 
     public function getProductAmount(){

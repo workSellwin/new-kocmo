@@ -106,7 +106,7 @@ class EGift
                             </tr>
                             <tr>
                                 <td height="154" align="center">
-                                    <img src="http://{$_SERVER['SERVER_NAME']}/upload/assets/img/egift-logo.png"
+                                    <img src="https://{$_SERVER['SERVER_NAME']}/upload/assets/img/egift-logo.png"
                                          width="350" height="154"
                                          style="display:block">
                                 </td>
@@ -139,7 +139,7 @@ class EGift
                             </tr>
                             <tr>
                                 <td align="center" height="13">
-                                    <img src="http://{$_SERVER['SERVER_NAME']}/upload/assets/img/line.png"
+                                    <img src="https://{$_SERVER['SERVER_NAME']}/upload/assets/img/line.png"
                                          width="505" height="13"
                                          style="display:block">
                                 </td>

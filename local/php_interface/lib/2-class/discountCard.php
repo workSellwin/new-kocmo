@@ -81,7 +81,7 @@ class CardEntity
 
         $obSmsService = new \CMlifeSmsServices();
 
-        $arSend = $obSmsService->sendSms($phone, $smsCode);
+        $arSend = $obSmsService->sendSms($phone, 'Ваш код: '.$smsCode);
 
         if ($arSend->error) {//ЛОГИРОВАНИЕ
 

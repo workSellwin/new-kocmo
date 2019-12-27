@@ -132,7 +132,15 @@ $tabControl->Begin();
 
                         xhr.onload = function (data) {
                             let respTxt = data.currentTarget.responseText;
+                            respTxt = JSON.parse(respTxt);
                             console.log(respTxt);
+
+                            if(respTxt.SUCCESS){
+                                alert('ok');
+                            }
+                            else{
+                                alert('error');
+                            }
                         };
 
                         xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');

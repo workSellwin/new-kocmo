@@ -160,4 +160,17 @@ function OnSalePayOrderActionUpdateEGift($order_id, $status)
     }
 }
 
-AddEventHandler('sale', 'OnSaleComponentOrderOneStepComplete', 'orderCreate');
+if(!function_exists('exchangeChangeQuantity')) {
+    function exchangeChangeQuantity($productId, $quantity, $quantityOld)
+    {
+        pr([$productId, $quantity, $quantityOld], 17);
+        CModule::IncludeModule("iblock");
+        if($quantity > 0){ 
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['ONLINE_STORE' => 249]);
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['UNDER_ORDER' => '']);
+        }else{
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['ONLINE_STORE' => '']);
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['UNDER_ORDER' => 250]);
+        }
+    }
+}

@@ -1,5 +1,13 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
-<?//pr($arResult["ERRORS"], 16);?>
+<?//pr($arResult["ERRORS"], 14);?>
+<?if( count($arResult["ERRORS"]) ):?>
+<div class="errors-block">
+    <?foreach( $arResult["ERRORS"] as $error):?>
+        <p class="error-message"><?=$error;?></p>
+    <?endforeach;?>
+</div>
+<?endif;?>
+
 <form action="<?= $APPLICATION->GetCurPage(); ?>" method="POST" class="cabinet-profile-form">
     <div class="cabinet-profile container">
         <div class="cabinet-profile__title">Личные данные</div>

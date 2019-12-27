@@ -29,10 +29,10 @@ if( \Bitrix\Main\Loader::includeModule('highloadblock') ){
                 $arEyes[] = $row;
                 break;
             case 3:
-                $arSkin[] = $row;
+                $arHair[] = $row;
                 break;
             case 4:
-                $arHair[] = $row;
+                $arSkin[] = $row;
                 break;
         }
     }
@@ -91,10 +91,10 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
     if( !empty($userFields['EMAIL']) ){
 
         $rsUsers = CUser::GetList($by, $order, ["!ID" => $USER->GetID(), "EMAIL" => $userFields['EMAIL']]);
-//pr($userFields,16);
+        //pr($_POST,14);
         if($ar = $rsUsers->fetch()){
             if( strtolower($ar['EMAIL']) == strtolower($userFields['EMAIL']) ) {
-                $arResult['ERRORS'][] = 'Данный EMAIL уже зарегестрирован!';
+                $arResult['ERRORS'][] = 'EMAIL ' . $ar['EMAIL'] . ' уже зарегестрирован на другого пользователя';
                 unset($userFields['EMAIL']);
             }
         }
@@ -110,9 +110,8 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
 
         if($ar = $rsUsers->fetch()){
 //            pr($ar['PERSONAL_PHONE'],16);
-//            pr($userFields['PERSONAL_PHONE'],16);
             if( $ar['PERSONAL_PHONE'] == $userFields['PERSONAL_PHONE'] ) {
-                $arResult['ERRORS'][] = 'Данный телефон уже зарегестрирован!';
+                $arResult['ERRORS'][] = 'Телефон ' . $ar['PERSONAL_PHONE'] . ' уже зарегестрирован  на другого пользователя';
                 unset($userFields['PERSONAL_PHONE']);
             }
         }
@@ -142,8 +141,10 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
     $user = new CUser;
     $user->Update($arUser['ID'], $userFields);
 
-    header("Location: " . $APPLICATION->GetCurPage() );
-    exit();
+    if( !count($arResult["ERRORS"]) ) {
+        header("Location: " . $APPLICATION->GetCurPage());
+        exit();
+    }
 }
 if( strpos($arResult['AR_USER']['PERSONAL_PHONE'], '+' !== 0) ) {
     $arResult['AR_USER']['PERSONAL_PHONE'] = '+' . $arResult['AR_USER']['PERSONAL_PHONE'];//чтобы не конфликтовало с placeholder'ом

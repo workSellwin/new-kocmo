@@ -14,6 +14,7 @@ function _Check404Error()
 use Bitrix\Main\Sms\Message;
 use Bitrix\Main\Sms\TemplateTable;
 use Bitrix\Sale\Order;
+use Lui\Kocmo\Request\Post\SetPayment;
 
 function number_format_kocmo($float)
 {
@@ -272,7 +273,7 @@ if (!function_exists("getPreparePhone2")) {
     {
 
         $phone = getPreparePhone($rawPhone);
-        $phone = substr($phone, 3, 2)."-".substr($phone, 5, 3)."-".substr($phone, 8, 2)."-".substr($phone, 10, 2);
+        $phone = substr($phone, 3, 2) . "-" . substr($phone, 5, 3) . "-" . substr($phone, 8, 2) . "-" . substr($phone, 10, 2);
         return $phone;
     }
 }
@@ -282,7 +283,7 @@ if (!function_exists("orderCreate")) {
     function orderCreate($orderId, $orderFields /*Bitrix\Sale\Order $order, $param*/)
     {
 
-        if(!$orderId){
+        if (!$orderId) {
             return true;
         }
         if (!\CModule::IncludeModule('mlife.smsservices')) {
@@ -298,15 +299,14 @@ if (!function_exists("orderCreate")) {
         $propertyCollection = $order->getPropertyCollection();
         $phonePropValue = $propertyCollection->getPhone();
 
-        if($phonePropValue){
+        if ($phonePropValue) {
             $phone = $propertyCollection->getPhone()->getValue();
-        }
-        else{
+        } else {
             return true;
         }
 
 
-        if( in_array($orderFields['DELIVERY_ID'], $courierDelivery) ){
+        if (in_array($orderFields['DELIVERY_ID'], $courierDelivery)) {
 
             $DELIVERY_DATA = $propertyCollection->getItemByOrderPropertyId(21);
             $DELIVERY_INTERVAL = $propertyCollection->getItemByOrderPropertyId(23);
@@ -317,18 +317,17 @@ if (!function_exists("orderCreate")) {
                 'DELIVERY_DATA' => $DELIVERY_DATA->getViewHtml(),
                 'DELIVERY_INTERVAL' => $DELIVERY_INTERVAL->getViewHtml(),
             ]);
-        }
-        elseif( in_array($orderFields['DELIVERY_ID'], $pickupDelivery) ){
+        } elseif (in_array($orderFields['DELIVERY_ID'], $pickupDelivery)) {
             $messages = getSmsMessages($pickupEvent, [
                 'ORDER_ID' => $order->getId(),
                 'SUM' => $order->getPrice(),
             ]);
         }
 
-        if(count($messages)){
+        if (count($messages)) {
             $obSmsService = new \CMlifeSmsServices();
 
-            foreach($messages as $message){
+            foreach ($messages as $message) {
                 $arSend = $obSmsService->sendSms($phone, $message->getText());
             }
         }
@@ -337,9 +336,10 @@ if (!function_exists("orderCreate")) {
     }
 }
 
-if(!function_exists("getSmsMessages")){
+if (!function_exists("getSmsMessages")) {
 
-    function getSmsMessages($eventName, array $param = []){
+    function getSmsMessages($eventName, array $param = [])
+    {
 
         $templates = Bitrix\Main\Sms\TemplateTable::getList([
                 'select' => ['*', 'SITES.SITE_NAME', 'SITES.SERVER_NAME', 'SITES.LID'],
@@ -348,10 +348,144 @@ if(!function_exists("getSmsMessages")){
 
         $messages = [];
 
-        foreach($templates as $template)
-        {
+        foreach ($templates as $template) {
             $messages[] = Bitrix\Main\Sms\Message::createFromTemplate($template, $param);
         }
         return $messages;
+    }
+}
+
+if (!function_exists("OnSalePayOrderActionUpdateEGift")) {
+    function OnSalePayOrderActionUpdateEGift($order_id, $status)
+    {
+        if ($status == 'Y') {
+            CModule::IncludeModule("sale");
+            CModule::IncludeModule("iblock");
+            $order = new MyOrder();
+            $order = $order->GetOrder($order_id);
+            $propertyCollection = $order->getPropertyCollection();
+            $arProperty = $propertyCollection->getArray();
+            $arProperty = array_column($arProperty['properties'], 'VALUE', 'CODE');
+
+            //проверка на сертификат
+            if (count($arProperty['EGIFT']) == 1 && in_array('Y', $arProperty['EGIFT'])) {
+
+                $payment = 8;
+                $price_order = $order->getPrice(); // Сумма заказа
+                $isPaid = $order->isPaid(); // true, если оплачен
+                $price_paid = $order->getSumPaid(); // Оплаченная сумма
+
+                if ($isPaid) {
+                    //Сумма заказа = Оплаченная сумма
+                    if ($price_order == $price_paid) {
+                        /*$order->setBasket($basket);
+                        $basket = $order->getBasket();*/
+                        $paymentIds = $order->getPaymentSystemId();
+                        if (in_array($payment, $paymentIds)) {
+
+                            $basket = $order->getBasket();
+                            foreach ($basket as $basketItem) {
+                                $id = $basketItem->getProductId();
+                            }
+
+                            $EGift = new EGift($id);
+
+                            $paymentCollection = $order->getPaymentCollection();
+                            $data_payment = [];
+                            foreach ($paymentCollection as $payment) {
+                                $ps = $payment->getPaySystem();
+                                $data_payment['XML_ID'] = $ps->getField('XML_ID');
+                                $data_payment['VALUE'] = $payment->getSum();
+                            }
+
+                            $gui = $EGift->OB['PROPERTY']['GUI_SERTIFIKAT'];
+                            $uid_order = $order->getField('XML_ID');
+                            $uid_payment = $data_payment['XML_ID'];
+                            $value = $data_payment['VALUE'];
+
+                            $status_payment = new \Lui\Kocmo\Request\Post\SetPayment($uid_order, $uid_payment, $value);
+                            $status_payment = $status_payment->Send();
+
+                            //получение номера E-Gift
+                            if (!$status_payment['ERROR']) {
+
+                                $arJson = [
+                                    'uid_order' => $order->getField('XML_ID'),
+                                    'uid_EGifts' => $gui,
+                                ];
+                                $sJson = json_encode($arJson);
+                                $ob = new \Lui\Kocmo\Request\Get\EGifts($sJson);
+                                $num_egift = $ob->Send();
+                            }
+
+                            CIBlockElement::SetPropertyValuesEx($id, false, ['OPLACHEN' => 1601]);
+                            CIBlockElement::SetPropertyValuesEx($id, false, ['ORDER_ID' => $order_id]);
+
+                            if ($num_egift['number']) {
+
+                                CIBlockElement::SetPropertyValuesEx($id, false, ['SHTRIH_KOD' => $num_egift['number']]);
+                                CIBlockElement::SetPropertyValuesEx($id, false, ['DATE' => date('d.m.Y')]);
+
+
+                                $arPropCode = ["SHTRIH_KOD", "OPLACHEN", "EMAIL", 'EMAIL_SENT', 'DATE'];
+                                $PROP = [];
+                                foreach ($arPropCode as $val) {
+                                    $prop = CIBlockElement::GetProperty(12, $id, ["sort" => "asc"], ["CODE" => $val]);
+                                    if ($ar_props = $prop->Fetch()) {
+                                        $PROP[$ar_props['CODE']] = $ar_props;
+                                    }
+                                }
+
+                                $result = (strtotime($PROP['DATE']['VALUE']) <= strtotime(date('d.m.Y')));
+                                if ($result || $PROP['DATE']['VALUE'] == '') {
+
+                                    //отпровляем сертификат на указанный email
+                                    if ($PROP['EMAIL']['VALUE']) {
+                                        $EGift = new EGift($id);
+                                        $html = $EGift->GetHtmlEmail();
+                                        $arEventFields = [
+                                            "HTML" => $html,
+                                            "EMAIL_TO" => $PROP['EMAIL']['VALUE'],
+                                        ];
+
+                                        $sent_email = CEvent::Send('E-GIFT', 's1', $arEventFields);
+                                    }
+
+                                    if ($sent_email) {
+                                        CIBlockElement::SetPropertyValuesEx($id, false, ['EMAIL_SENT' => 1602]);
+                                    }
+                                }
+                            } else {
+                                AddMessage2Log('Не получен номер E-Gift от 1с. Заказ № - ' . $id . '. Статус оплачен. 1c вернул ' . $num_egift['number']);
+                                $arEventFields = [
+                                    "ORDER_ID" => $id,
+                                ];
+                                CEvent::Send('NO_NUMBER_EGIFT_1C', 's1', $arEventFields);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+if(!function_exists('BITGetDeclNum'))
+{
+
+    /**
+     * Возврат окончания слова при склонении
+     *
+     * Функция возвращает окончание слова, в зависимости от примененного к ней числа
+     * Например: 5 товаров, 1 товар, 3 товара
+     *
+     * @param int $value - число, к которому необходимо применить склонение
+     * @param array $status - массив возможных окончаний
+     * @return mixed
+     */
+    function BITGetDeclNum($value=1, $status= array('','а','ов'))
+    {
+        $array =array(2,0,1,1,1,2);
+        return $status[($value%100>4 && $value%100<20)? 2 : $array[($value%10<5)?$value%10:5]];
     }
 }
