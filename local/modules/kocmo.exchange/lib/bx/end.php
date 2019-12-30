@@ -14,23 +14,12 @@ class End
     protected $utils = null;
     protected $errors = [];
     protected $productsStatus = [];
+    private $brandsIBlockId = 7;
+    private $catalogIBlockId = 2;
 
     function __construct()
     {
         $this->utils = new Exchange\Utils();
-    }
-
-    public function update(): bool
-    {
-
-        //$connection = \Bitrix\Main\Application::getConnection();
-        //$connection->truncateTable('kocmo_exchange_data');
-        //$connection->truncateTable('kocmo_exchange_product_image');
-
-        //$this->utils->setModuleData('PRODUCT_LAST_UID', '');
-        //$this->utils->setModuleData('OFFER_LAST_UID', '');
-
-        return true;
     }
 
     public function updateElementStatus(){
@@ -42,7 +31,7 @@ class End
 
             $el = new \CIBlockElement();
 
-            $elementsStatus = $this->utils->getElementsStatus(["IBLOCK_ID" => [2], '!SORT' => 988]);//все элементы с их статусами
+            $elementsStatus = $this->utils->getElementsStatus(["IBLOCK_ID" => [$this->catalogIBlockId]]);
             $productPrices = $this->utils->getElementPrices();//все элементы имеющие цены
             $productQuantity = $this->utils->getProductsQuantity();//все товары с количеством
 
@@ -74,7 +63,7 @@ class End
 
             $res = \CIBlockElement::GetList(
                 [],
-                ["IBLOCK_ID" => 2, "!PROPERTY_MARKA" => false, 'ACTIVE' => 'Y'],
+                ["IBLOCK_ID" => $this->catalogIBlockId, "!PROPERTY_MARKA" => false, 'ACTIVE' => 'Y'],
                 false,
                 false,
                 ["NAME", "ID", "XML_ID", 'PROPERTY_MARKA']
@@ -89,7 +78,7 @@ class End
 
             $property_enums = \CIBlockPropertyEnum::GetList(
                 [],
-                ["IBLOCK_ID" => 2, "CODE" => "MARKA", 'ID' => array_keys($markaIds)]
+                ["IBLOCK_ID" => $this->catalogIBlockId, "CODE" => "MARKA", 'ID' => array_keys($markaIds)]
             );
 
             $brandsEnum = [];
@@ -102,7 +91,7 @@ class End
 
             $res = \CIBlockElement::GetList(
                 [],
-                ["IBLOCK_ID" => 7],
+                ["IBLOCK_ID" => $this->brandsIBlockId],
                 false,
                 false,
                 ["NAME", "ID", "XML_ID", 'PROPERTY_BRAND_BIND']
@@ -112,17 +101,47 @@ class End
 
                 $brandsElem[$fields['PROPERTY_BRAND_BIND_VALUE']] = $fields['ID'];
             }
-
+            unset($res);
             $el = new \CIBlockElement;
-//pr($brandsElem, 14);
-            foreach ($brandsElem as $enumXmlId => $brandId) {
+//pr( count($brandsElem), 14);
+//pr( $brandsElem, 14);
+            $timestamp = ConvertTimeStamp(time(), "FULL");
 
-                if (isset($brandsEnum[$enumXmlId])) {
-                    $el->Update($brandId, ['ACTIVE' => 'Y']);
-                } else {
-                    $el->Update($brandId, ['ACTIVE' => 'N']);
+            foreach($brandsEnum as $enumXmlId => $brand){
+
+                if( isset( $brandsElem[$enumXmlId] ) ){
+                    $el->Update($brandsElem[$enumXmlId], ['ACTIVE' => 'Y']);
+                }
+                else{
+
+                    $PROP['BRAND_BIND'] = $enumXmlId;
+
+                    $arLoadProductArray = Array(
+                        "MODIFIED_BY" => $GLOBALS['USER']->GetID(),
+                        "IBLOCK_SECTION_ID" => false,
+                        "IBLOCK_ID" => $this->brandsIBlockId,
+                        "PROPERTY_VALUES"=> $PROP,
+                        "NAME" => $brand,
+                        "CODE" => \CUtil::translit($brand, 'ru'),
+                        "ACTIVE" => "Y",
+                    );
+
+                    $el->Add($arLoadProductArray);
                 }
             }
+
+            $res = \CIBlockElement::GetList(
+                [],
+                ["<TIMESTAMP_X" => $timestamp, "IBLOCK_ID" => $this->brandsIBlockId],
+                false,
+                false,
+                ["ID"]
+            );
+
+            while( $fields = $res->fetch() ){
+                $el->Update($fields['ID'], ['ACTIVE' => 'N']);
+            }
+
         } catch (LoaderException $e) {
             $this->errors[] = $e->getMessage();
         }
@@ -133,76 +152,4 @@ class End
         $bx = new Rest();
         $bx->updateAvailable();
     }
-//
-//    public function activateElement()
-//    {
-//        $bx = new Rest();
-//        $bx->activateElement();
-//    }
-
-//    public function deactivateEmptyPriceElem()
-//    {
-//
-//        try {
-//            Loader::includeModule('iblock');
-//            Loader::includeModule('catalog');
-//
-//            $res = \CIBlockElement::GetList(
-//                [],
-//                ["IBLOCK_ID" => [2, 3]],
-//                false,
-//                false,
-//                ['ID', 'ACTIVE']
-//            );
-//
-//            $ids = [];
-//
-//            while ($fields = $res->fetch()) {
-//                $ids[$fields['ID']] = $fields['ACTIVE'];
-//            }
-//
-//            $iterator = Model\Price::getlist([]);
-//            $productPrices = [];
-//
-//            while ($row = $iterator->fetch()) {
-//
-//                if ($row['PRICE'] > 0) {
-//                    $productPrices[$row['PRODUCT_ID']] = true;
-//                }
-//            }
-//            $el = new \CIBlockElement();
-//
-//            foreach ($ids as $id => $status) {
-//
-//                if (!isset($productPrices[$id])) {
-//                    if ($status != 'N') {
-//                        $el->Update($id, ['ACTIVE' => 'N']);
-//                    }
-//                }
-//            }
-//        } catch (LoaderException $e) {
-//
-//        }
-//    }
-
-//    public function updateAvailable()
-//    {
-//
-//        $productAmount = $this->getProductAmount();
-//        $productQuantity = $this->utils->getProductsQuantity();
-//
-//        $obProduct = new \CCatalogProduct();
-//
-//        foreach ($productAmount as $id => $quantity) {
-//
-//            if ($quantity < 2) {
-//                $quantity = 0;
-//            }
-//
-//            if($quantity != $productQuantity[$id]){
-//                $productQuantity[$id] = $quantity;
-//                $obProduct->Update($id, ['QUANTITY' => $quantity]);
-//            }
-//        }
-//    }
 }
