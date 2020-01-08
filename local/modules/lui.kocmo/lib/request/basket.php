@@ -44,7 +44,19 @@ class Basket extends Base
     public static function Get1CRequest()
     {
         $ob = new self();
-        return $ob->arCache[$ob->KeyHashFinal()];
+        //return $ob->arCache[$ob->KeyHashFinal()];
+        return $ob->Run();
+    }
+
+
+    public static function Set1CRequestFinal($arData)
+    {
+        return $_SESSION['Basket-Request-1c-final'] = $arData;
+    }
+
+    public static function Get1CRequestFinal()
+    {
+        return $_SESSION['Basket-Request-1c-final'];
     }
 
 
@@ -74,9 +86,22 @@ class Basket extends Base
      */
     public function Run()
     {
-        return $this->GetDiscount();
+        $arData = $this->GetDiscount();
+        self::Set1CRequestFinal($arData);
+        return $arData;
     }
 
+
+    /**
+     * @param Sale\Order $obOrder
+     * @return array
+     */
+    public function RunOrder(\Bitrix\Sale\Order $obOrder)
+    {
+        $this->obBasket = $obOrder->getBasket();
+        $this->SetAllPrice();
+        return $this->GetDiscountOrder($obOrder);
+    }
 
     public function SetBasket()
     {
@@ -116,36 +141,79 @@ class Basket extends Base
         }
 
         $arReqest['goods'] = $this->SetGoods();
-        if($arReqest['goods']){
+        if ($arReqest['goods']) {
             return $this->Send($arReqest);
-        }else{
+        } else {
             return [];
         }
 
     }
 
+    public function GetDiscountOrder(\Bitrix\Sale\Order $obOrder)
+    {
+        $arReqest = $this->GetStructure();
+
+        $prop = self::GetOrderProp($obOrder);
+
+        if ($prop['CARD_COSMO']['value']) {
+            $arReqest['card'] = $prop['CARD_COSMO']['value'];
+        }
+
+        if ($prop['PROMO_CODE']['value']) {
+            $arReqest['promo'] = $prop['PROMO_CODE']['value'];
+        }
+
+        $arReqest['goods'] = $this->SetGoods();
+        if ($arReqest['goods']) {
+            return $this->Send($arReqest);
+        } else {
+            return [];
+        }
+
+    }
+
+    /**
+     * @param \Bitrix\Sale\Order $obOrder
+     * @return array
+     */
+    protected static function GetOrderProp(\Bitrix\Sale\Order $obOrder)
+    {
+        $arOrderProp = [];
+        $propertyCollection = $obOrder->getPropertyCollection();
+        $ar = $propertyCollection->getArray();
+        foreach ($ar['properties'] as $p) {
+            $arOrderProp[$p['CODE']] = [
+                'name' => $p['NAME'],
+                'type' => $p['TYPE'],
+                'value' => reset($p['VALUE']),
+            ];
+        }
+        return $arOrderProp;
+    }
+
+
     protected function Send(array $arRequest)
     {
         Loader::includeSharewareModule('kocmo.exchange');
         $json = json_encode($arRequest);
-        $hash = $this->GetHash($json);
-        if (!$data = $this->GetCacheData($hash)) {
-            try {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request('GET', $this->url, [
-                    'query' => ['json' => $json]
-                ]);
-                $data = $res->getBody();
+        // $hash = $this->GetHash($json);
+        //if (!$data = $this->GetCacheData($hash)) {
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', $this->url, [
+                'query' => ['json' => $json]
+            ]);
+            $data = $res->getBody();
 
-                $data = json_decode($data, true);
-            } catch (\Exception $e) {
-                $data = [
-                    'ERROR' => [$e->getMessage()],
-                ];
-            }
-            $this->SetCacheData($hash, $data);
-            $this->SetCacheData($this->KeyHashFinal(), $data);
+            $data = json_decode($data, true);
+        } catch (\Exception $e) {
+            $data = [
+                'ERROR' => [$e->getMessage()],
+            ];
         }
+        // $this->SetCacheData($hash, $data);
+        // $this->SetCacheData($this->KeyHashFinal(), $data);
+        // }
         return $data;
     }
 

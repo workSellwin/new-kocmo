@@ -12,7 +12,7 @@ class DataOrderJson
             'OrderId' => '',
             'card' => '',
             'promo' => '',
-            'shop' => '554e5046-aa97-11e8-a216-00505601048d',
+            'shop' => 'd4b00ca8-1506-11ea-a255-00505601048d',
             'documentid' => '',
             'payment' => [
                 'name' => '',

@@ -4,7 +4,6 @@
 namespace Lui\Kocmo\Helper;
 
 
-use Lui\Kocmo\Helper\EmailBasket;
 use Lui\Kocmo\Request\Basket;
 
 class Order
@@ -69,7 +68,7 @@ class Order
 
                 if (true) {
                     $arParamsDelivery = [
-                        'date_time' => date('d.m.Y h:i:s'),
+                        'date_time' =>reset($arOrderProp['DATE_OF_DELIVERY']['value']).' 01:00:00',
                         'adress' => "Независимости 6"
                     ];
                     $arJson['delivery']['params'] = $arParamsDelivery;
@@ -154,7 +153,7 @@ class Order
             $arJson['goods'] = [];
             $arJson['GIFT'] = [];
 
-            $arGoods = Basket::Get1CRequest();
+            $arGoods = Basket:: Get1CRequestFinal();
             $arGoods = array_column($arGoods['goods'], null, 'UID');
 
             foreach ($basketItems as $item) {
@@ -213,14 +212,28 @@ class Order
         $basket = $order->getBasket();
         return EmailBasket::GetHtml($basket);
     }
+
+
+    public static function Send1c($orderId)
+    {
+        $order = \Bitrix\Sale\Order::load($orderId);
+        if (is_object($order)) {
+            $ob = new \Lui\Kocmo\Request\Order($orderId);
+            $data = $ob->Run();
+            $uid = $data['UID'];
+            $order->setField('XML_ID', $uid);
+            $propertyCollection = $order->getPropertyCollection();
+            $propertyValue = \Bitrix\Sale\PropertyValue::create($propertyCollection, [
+                'ID' => 20,
+                'NAME' => 'ID 1C',
+                'TYPE' => 'STRING',
+                'CODE' => 'UID',
+            ]);
+            $propertyValue->setField('VALUE', $uid);
+            $propertyCollection->addItem($propertyValue);
+            $order->save();
+        }
+    }
+
+
 }
-
-/*
- *
- *
-
-
-
-
- *
- */

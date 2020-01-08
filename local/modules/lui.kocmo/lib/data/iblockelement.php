@@ -32,4 +32,21 @@ class IblockElement extends Base implements IblockInterface
         return $arData;
     }
 
+    public function GetDataNew(array $arFilter): array
+    {
+        $arData = [];
+        $arSelect = Array("ID", "IBLOCK_ID", "DETAIL_PICTURE","PROPERTY_ARTIKUL");
+        $res = \CIBlockElement::GetList(
+            ['ID' => 'ASC'],
+            $arFilter,
+            false,
+            false,
+            $arSelect
+        );
+        while ($arFields = $res->GetNext()) {
+            $arData[] = $arFields;
+        }
+        return $arData;
+    }
+
 }

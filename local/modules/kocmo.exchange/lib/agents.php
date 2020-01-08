@@ -37,4 +37,12 @@ class Agents
 
         return 'Kocmo\\Exchange\\Agents::actualizeStock();';
     }
+
+    static public function actualizePrices(){
+
+        $bx = StaticFactory::factory(80);
+        $bx->update();
+
+        return 'Kocmo\\Exchange\\Agents::start(80);';
+    }
 }

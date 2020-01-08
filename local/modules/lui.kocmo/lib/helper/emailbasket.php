@@ -59,7 +59,13 @@ HTML;
         if ($arElement) {
             $arElement = reset($arElement);
         }
-        PR($arElement, true);    $html = <<<HTML
+        $DETAIL_PICTURE = $arElement['DETAIL_PICTURE'];
+        $img = '';
+        if ($DETAIL_PICTURE) {
+            $src = \CFile::GetPath($DETAIL_PICTURE);
+            $img = "<img src='http://178.159.45.82{$src}' alt='t' width='191' >";
+        }
+        $d = <<<HTML
 <table cellspacing="0" cellpadding="0" border="0" width="100%" bgcolor="#ffffff">
                                                     <tbody>
                                                     <tr  height="20">
@@ -78,7 +84,7 @@ HTML;
                                                     </tr>
                                                     <tr>
                                                         <td align="center" rowspan="3">
-                                                            <img src="assets/img/p1.jpg" alt="">
+                                                            {$img}
                                                         </td>
                                                         <td colspan="2">
 
@@ -122,8 +128,7 @@ HTML;
                                                 </table>
                                                
 HTML;
-
-        return $html;
+        return $d;
     }
 
     public static function HrTop(int $i, int $count)
@@ -149,145 +154,4 @@ HTML;
         return '<hr style="border: 1px solid #EDEDED">';
     }
 
-    public static function Exsample()
-    {
-        return <<<HTML
-
-                                        <tr>
-                                            <td>
-                                                <hr style="border: 1px solid #EDEDED">
-                                                <table cellspacing="0" cellpadding="0" border="0" width="100%" bgcolor="#ffffff">
-                                                    <tbody>
-                                                    <tr  height="20">
-                                                        <td height="20" width="134" >
-
-                                                        </td>
-                                                        <td width="191" >
-
-                                                        </td>
-                                                        <td width="82" >
-
-                                                        </td>
-                                                        <td >
-
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" rowspan="3">
-                                                            <img src="assets/img/p1.jpg" alt="">
-                                                        </td>
-                                                        <td colspan="2">
-
-                                                        </td>
-                                                        <td >
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:20px;color:#D01C60;line-height: 120%;">
-                                                            23,90</font> <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                        style="font-size:14px;color:#D01C60;line-height: 20px;">руб
-                                                            </font>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:14px;color:#333131;line-height: 20px;">
-                                                            Маска карбонатная, на основе чистка очистки от черных точек, 500 мл.
-                                                            </font>
-                                                        </td>
-                                                        <td>
-
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:14px;color:#181717;line-height: 20px;">
-                                                            Артикул: 455-90-90
-                                                            </font>
-                                                        </td>
-                                                        <td colspan="2">
-                                                            <img src="assets/ico/color.png" alt="">
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:14px;color:#181717;line-height: 20px;position: relative;top:-8px">
-                                                                светло-бежевый 102
-                                                            </font>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td height="20" colspan="4">
-
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                                <hr style="border: 1px solid #EDEDED">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <table cellspacing="0" cellpadding="0" border="0" width="100%" bgcolor="#ffffff">
-                                                    <tbody>
-                                                    <tr  height="20">
-                                                        <td height="20" width="134" >
-
-                                                        </td>
-                                                        <td width="191" >
-
-                                                        </td>
-                                                        <td width="82" >
-
-                                                        </td>
-                                                        <td >
-
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" rowspan="3">
-                                                            <img src="assets/img/p2.png" alt="">
-                                                        </td>
-                                                        <td colspan="2">
-
-                                                        </td>
-                                                        <td >
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:20px;color:#D01C60;line-height: 120%;">
-                                                                78,50</font>
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:14px;color:#D01C60;line-height: 20px;">руб
-                                                        </font>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:14px;color:#333131;line-height: 20px;">
-                                                                Маска карбонатная, на основе чистка очистки от черных точек, 500 мл.
-                                                            </font>
-                                                        </td>
-                                                        <td>
-
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="3">
-                                                            <font face="Calibri, Tahoma, Segoe, sans-serif"
-                                                                  style="font-size:14px;color:#181717;line-height: 20px;">
-                                                                Артикул: 455-90-90
-                                                            </font>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td height="20" colspan="4">
-
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                                <hr style="border: 1px solid #EDEDED">
-                                            </td>
-                                        </tr>
-                                     
-HTML;
-
-    }
 }

@@ -84,7 +84,7 @@ class IncludeComponent
             "BROWSER_TITLE" => "-",
             "CACHE_GROUPS" => "N",
             "CACHE_TIME" => "36000000",
-            "CACHE_TYPE" => "A",
+            "CACHE_TYPE" => "N",
             "CHECK_DATES" => "Y",
             "COMPONENT_TEMPLATE" => ".default",
             "DETAIL_URL" => "",
@@ -160,7 +160,8 @@ class IncludeComponent
             "MAX_LEVEL" => "1",
             "MENU_CACHE_GET_VARS" => array(0 => "",),
             "MENU_CACHE_TIME" => "86400",
-            "MENU_CACHE_TYPE" => "A",
+            "MENU_CACHE_TYPE" => "Y",
+            "CACHE_TYPE" => "Y",
             "MENU_CACHE_USE_GROUPS" => "N",
             "ROOT_MENU_TYPE" => "top",
             "USE_EXT" => "N"

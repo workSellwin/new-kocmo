@@ -28,8 +28,20 @@ class ActionItems extends HardIB
      * @throws \Bitrix\Main\ArgumentException
      * @throws \Bitrix\Main\SystemException
      */
-    public function GetProduct(int $id)
+    public function GetProductXml($id)
     {
-        return $this->GetList(['UF_LINK' => $id]);
+        return $this->GetList(['UF_XML_ID' => $id]);
+    }
+
+
+    /**
+     * @param int $id
+     * @return array
+     * @throws \Bitrix\Main\ArgumentException
+     * @throws \Bitrix\Main\SystemException
+     */
+    public function GetProduct($id)
+    {
+        return $this->GetList(['UF_XML_ID' => $id]);
     }
 }

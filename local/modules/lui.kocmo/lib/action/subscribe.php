@@ -5,6 +5,7 @@ namespace Lui\Kocmo\Action;
 
 use Lui\Kocmo\Interfaces\ActionsInterfaces;
 use Bitrix\Catalog\Product\SubscribeManager;
+use Lui\Kocmo\Data\IblockElement;
 
 class Subscribe implements ActionsInterfaces
 {
@@ -44,6 +45,15 @@ class Subscribe implements ActionsInterfaces
 
         if(!empty($arResult['ERROR']))return $arResult;
 
+
+
+        $data = new IblockElement();
+        $arFilter = ['IBLOCK_ID'=>2, 'ID'=>$arParams['ITEM_ID']];
+        $data = $data->GetData($arFilter);
+        $arEventFields = array(
+            "MESSAGE" => 'Подписались на товар: <br>ID - '.$arParams['ITEM_ID'].'<br>Название - '.$data[$arParams['ITEM_ID']]['NAME'].'<br>Артикул - '.$data[$arParams['ITEM_ID']]['PROPERTY']['ARTIKUL'],
+        );
+        \CEvent::Send("SUBSCRIPTION_PRODUCT_USER", 's1', $arEventFields);
         return [
             'ADD_SUBSCRIBE' => 'Y',
             'MESSAGE' => 'Вы успешно подписались',

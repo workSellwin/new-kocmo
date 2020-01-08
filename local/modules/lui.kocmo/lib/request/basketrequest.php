@@ -10,11 +10,11 @@ class BasketRequest
 
     public function __construct($arData = [])
     {
-        if ($arData) {
+        /*if ($arData) {
             $this->arBasket = $arData;
-        } else {
+        } else {*/
             $this->arBasket = Basket::Get1CRequest();
-        }
+     //   }
     }
 
     public function GetEconomy()

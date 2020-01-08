@@ -38,7 +38,6 @@ class Handler
     {
 
         if ($arFields['IBLOCK_ID'] == 6 && $arFields['ID']) {
-
             \CModule::IncludeModule('iblock');
             $arSelect = Array("ID", "NAME", "IBLOCK_ID", 'ACTIVE', 'PROPERTY_EMAIL_TO_VALUE', 'PROPERTY_USER_ID', 'PROPERTY_PROD_ID', 'PROPERTY_RATING');
             $arFilter = Array("IBLOCK_ID" => $arFields['IBLOCK_ID'], "ID" => $arFields['ID']);
@@ -62,15 +61,15 @@ class Handler
                                 //$text = htmlspecialchars($text);
                                 $arEventFields = array(
                                     "TEXT_MESSAGE" => $text,
-                                    "SECTION_EMAIL_TO" => $arUser['EMAIL'],
+                                    "SECTION_EMAIL_TO" => 'Yauheni444@gmail.com',// $arUser['EMAIL'],
                                     "SITE_NAME" => 'Kocmo.by',
                                     'CATEGORY' => '',
                                     "EMAIL_FROM" => 'Kocmo'
                                 );
-                                $e = \CEvent::SendImmediate("ALX_FEEDBACK_FORM", 's1', $arEventFields);
+                                $e = \CEvent::SendImmediate("ALX_COMMENT_FORM", 's1', $arEventFields);
                                 //переопределяем свойство Email отправлен пользователю
                                 if ($e) {
-                                    $arFields['PROPERTY_VALUES'][85][0]['VALUE'] = 255;
+                                    $arFields['PROPERTY_VALUES'][85]=['VALUE' => 255];
                                 }
                             }
                         }
@@ -84,7 +83,7 @@ class Handler
                     }
                 }
             }
-            return true;
+            //return false;
         }
     }
 
@@ -156,5 +155,26 @@ class Handler
         }
     }
 
+
+
+    /**
+     * @param $ID
+     * @param $eventName
+     * @param $arFields
+     * @throws \Bitrix\Main\ArgumentNullException
+     * @throws \Bitrix\Main\NotImplementedException
+     */
+    function OnOrderNewSendEmail($ID, &$eventName, &$arFields)
+    {
+        $arFieldsNew = [];
+        $order = \Bitrix\Sale\Order::load($ID);
+        $prop = $ar = \Lui\Kocmo\Helper\Order::GetProperty($order);
+        $arFieldsNew['DELIVERY_NAME'] = \Lui\Kocmo\Helper\Order::GetPayNameOrder($order);
+        $arFieldsNew['DELIVERY_DATE'] = $prop['DATE_OF_DELIVERY'];
+        $arFieldsNew['ORDER_SUM'] = $order->getPrice();
+        $arFieldsNew['PAY_NAME']=\Lui\Kocmo\Helper\Order::GetDeliveryNameOrder($order);
+        $arFieldsNew['ORDER_LIST']=\Lui\Kocmo\Helper\Order::GetOrderListEmail($order);
+        $arFields = array_merge($arFields, $arFieldsNew);
+    }
 
 }

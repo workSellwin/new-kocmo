@@ -7,7 +7,7 @@ class Url
     /**
      * @var string
      */
-    protected static $baseUrl = 'http://kocmo1c.sellwin.by/Kosmo/hs/Kocmo/';
+    protected static $baseUrl = 'http://1c.kocmo.by/Kocmo/hs/Kocmo/';
     /**
      * @var array
      */

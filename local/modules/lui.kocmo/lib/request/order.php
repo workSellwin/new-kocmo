@@ -17,7 +17,6 @@ class Order extends Base
     {
         $this->id = $id;
         $url = \Lui\Kocmo\Request\Config\Url::SetOrder();
-        AddMessage2Log($url);
         $arParams = ['json' => ''];
         parent::__construct($url, $arParams);
     }
@@ -28,13 +27,12 @@ class Order extends Base
      */
     public function Run()
     {
-        $json = \Lui\Kocmo\Helper\Order::GetJson($this->id);
+        $ob = new  \Lui\Kocmo\Helper\OrderJson($this->id);
+        $json = $ob->GetsJson();
         Loader::includeSharewareModule('kocmo.exchange');
         try {
             $client = new \GuzzleHttp\Client();
-            $res = $client->request('POST', $this->url, [
-                'query' => ['json' => $json]
-            ]);
+            $res = $client->request('POST', $this->url, ['body' => $json]);
             $data = $res->getBody();
             $data = json_decode($data, true);
         } catch (\Exception $e) {
