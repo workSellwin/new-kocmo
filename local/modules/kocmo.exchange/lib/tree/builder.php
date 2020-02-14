@@ -79,7 +79,8 @@ abstract class Builder
         $success = false;
         $client = new \GuzzleHttp\Client();
 
-        $response = $client->request('GET', $uri);
+        //$response = $client->request('GET', $uri);
+        $response = $client->request('GET', $uri, ['connect_timeout' => 5, 'timeout' => 30]);
 
         if ($response->getStatusCode() == 200) {
 

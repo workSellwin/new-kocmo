@@ -48,12 +48,13 @@ class Section extends Helper
                 }
             }
             $cIBlockSection = new \CIBlockSection;
-
+            //pr($this->treeBuilder->getTree(), 14);
             foreach ($this->treeBuilder->structGenerator($this->treeBuilder->getTree()) as $section) {
 
                 if ( isset($this->conformityHash[ $section[$this->arParams['ID']] ]) ) {
 
                     $section['ID'] = $this->conformityHash[$section['UID']];
+
                     $this->updateSection($section, $cIBlockSection);
                 }
                 else{

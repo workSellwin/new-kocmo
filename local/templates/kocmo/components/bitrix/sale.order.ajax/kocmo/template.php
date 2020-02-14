@@ -13,7 +13,7 @@ use Bitrix\Main;
 
 $context = Main\Application::getInstance()->getContext();
 $request = $context->getRequest();
-
+$this->addExternalJs($templateFolder . '/order_ajax.js');
 
 $arDeliveryParams = [
     '4' => [
@@ -47,6 +47,13 @@ if ($arResult['ERROR'] and $_REQUEST['STEP'] == 2) {
     $arResult['ERROR'] = array_unique($arResult['ERROR']);
    // echo "<div class='alert-danger alert'>" . implode('<br>', $arResult['ERROR']) . "</div>";
 }
+
+
+?>
+<script>
+    NoDate=<?=\CUtil::PhpToJSObject($arResult['NO-DATA-JSON'])?>;
+</script>
+<?php
 
 if (strlen($request->get('ORDER_ID')) > 0) {
     include(Main\Application::getDocumentRoot() . $templateFolder . '/confirm.php');
@@ -178,7 +185,7 @@ if (strlen($request->get('ORDER_ID')) > 0) {
                                                    value=""
                                                    class="form-field__input"
                                                    type="text"
-                                                   onclick="BX.calendar({node: this, field: this, bTime: false});"
+                                                   onclick="BX.calendar({node: this, field: this, bTime: false});changeCalendar();"
                                                    placeholder="<?= $prop['NAME'] ?>">
                                         </div>
                                         <?
@@ -315,7 +322,7 @@ if (strlen($request->get('ORDER_ID')) > 0) {
 
                 Вернуться в каталог
             </a>
-            <button type="submit" name="STEP" value="2" class="basket-footer__submit btn">
+            <button type="submit" name="STEP" value="2" onclick="ga('send', 'event', 'oform_zakaz', 'btn_oform_zakaz'); yaCounter47438272.reachGoal('oform_zakaz'); return true;" class="basket-footer__submit btn">
                 ОФормить заказ
                 <svg width="26" height="16">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-arrow-right-bold"></use>

@@ -96,4 +96,46 @@ if (0 < $arResult['SECTIONS_COUNT'])
 		}
 	}
 }
+
+$novinki = false;
+$statusNewFilterName = 'filter_catalog_prod_54_2553136946';
+
+if($_GET['available_yes'] == 'y' && $_GET['set_filter'] == 'y' && $_GET[$statusNewFilterName] == 'Y'
+    && strpos($_SERVER['REQUEST_URI'], '/catalog/?') === 0){
+    $novinki = true;
+}
+
+if($novinki){
+
+    $ibId = current($arResult['SECTIONS'])["IBLOCK_ID"];
+    $sectionIds = array_column($arResult['SECTIONS'], "ID");
+    $issetSectionIds = [];
+
+    foreach($sectionIds as $sectionId){
+
+        $res = CIBlockElement::GetList(
+            [],
+            [
+                "IBLOCK_ID" => $ibId,
+                "PROPERTY_STATUS" => 937,//status novinka
+                "SECTION_ID" => $sectionId,
+                "INCLUDE_SUBSECTIONS" => "Y",
+                "CATALOG_AVAILABLE" => "Y"
+            ],
+            false,
+            false,
+            ["ID", "IBLOCK_SECTION_ID"]
+        );
+
+        if($res->SelectedRowsCount() > 0){
+            $issetSectionIds[] = $sectionId;
+        }
+    }
+
+    foreach($arResult['SECTIONS'] as $key => $value){
+        if(!in_array($value['ID'], $issetSectionIds)){
+            unset($arResult['SECTIONS'][$key]);
+        }
+    }
+}
 ?>

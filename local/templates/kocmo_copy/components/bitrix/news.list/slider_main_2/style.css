@@ -1,0 +1,28 @@
+body .full-width-slider .swiper-pagination-bullet{
+    border-color:#8C249F;
+}
+body .full-width-slider .swiper-pagination-bullet::after{
+    background-color:#8C249F;
+    opacity:0.25;
+}
+body .full-width-slider .swiper-pagination-bullet-active::after{
+    opacity:1;
+}
+
+.thumb-wrap {
+    position: relative;
+    padding-bottom: 30.2%; /*56.25%;  задаёт высоту контейнера для 16:9 (если 4:3 — поставьте 75%) */
+    height: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+.thumb-wrap iframe,  .thumb-wrap video{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-width: 0;
+    outline-width: 0;
+}

@@ -10,7 +10,6 @@ $PROP = array_column($arResult['PROPERTIES'], 'VALUE', 'CODE');
 </script>
 
 <? global $AVERAGE_RATING;
-
 $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
 ?>
 <div class="product">
@@ -21,8 +20,8 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
                     <div class="swiper-container product__slider js_product__slider">
                         <div class="swiper-wrapper">
                             <? if (!empty($arResult['RES']['PHOTO_BIG'])): ?>
-                                <? foreach ($arResult['RES']['PHOTO_BIG'] as $photo): ?>
-                                    <div class="swiper-slide">
+                                <? foreach ($arResult['RES']['PHOTO_BIG'] as $k => $photo): ?>
+                                    <div class="swiper-slide big_img_<?=$k?>">
                                         <a href="<?= $photo['src'] ?>"
                                            rel="gallery1" class="fancybox">
                                             <!-- 545x361 -->
@@ -38,8 +37,8 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
                     <div class="product__slider-thumbs-wrap">
                         <div class="swiper-container js_product__slider-thumbs">
                             <div class="swiper-wrapper">
-                                <? foreach ($arResult['RES']['PHOTO_SMAL'] as $photo): ?>
-                                    <div class="swiper-slide product__slider-thumbs-item">
+                                <? foreach ($arResult['RES']['PHOTO_SMAL'] as $key => $photo): ?>
+                                    <div class="swiper-slide product__slider-thumbs-item smail_img_<?=$key?>">
                                         <!-- 82x54 -->
                                         <img src="<?= $photo['src'] ?>"
                                              alt="">
@@ -110,8 +109,10 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
                                         "HIDE_ICONS" => "Y"
                                     )
                                 ); ?>
-                                <span class="js_scroll-to"
-                                      data-scroll-to-id="reviews"><?= $PROP['COUNT_REVIEWS'] ? $PROP['COUNT_REVIEWS'] : 0 ?> отзывов</span>
+                                <?if($PROP['COUNT_REVIEWS']):?>
+                                    <span class="js_scroll-to"
+                                          data-scroll-to-id="reviews"><?= $PROP['COUNT_REVIEWS'] ? $PROP['COUNT_REVIEWS'] : 0 ?> отзыв<?=BITGetDeclNum($PROP['COUNT_REVIEWS'])?></span>
+                                <?endif;?>
                             </div>
                             <div class="product__view-watched">
                                 <span class="product__view-watched-ico"></span>
@@ -204,7 +205,7 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
 
                             <div class="product__colors-header">
                                 <div class="product__colors-title-wrap">
-                                    <div class="product__colors-subtitle">цвет пудры:</div>
+                                    <div class="product__colors-subtitle">Оттенок:</div>
                                     <div class="product__colors-title js_product__colors-title"></div>
                                 </div>
 
@@ -252,7 +253,7 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
                         </div>
 
                         <button type="submit"
-                                data-basket-url="/cart/"
+                                data-basket-url="/cart/" onclick="ga('send', 'event', 'v_korz', 'btn_v_korz'); yaCounter47438272.reachGoal('v_korz'); return true;"
                                 class="btn btn--transparent product__submit prod-items-id_<?= $arResult['dataOffers'][$arResult['ID']]['ID'] ?>" <?= $arResult['CATALOG_QUANTITY'] > 0 ? 'style="display: flex"' : 'style="display: none"' ?>>
                             <svg width="25" height="25">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-basket"></use>
@@ -260,7 +261,7 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
                             <span class="btn-pho"><?= $arResult['dataOffers'][$arResult['ID']]['ADD_BASKET'] != 'N' ? 'Перейти в корзину' : 'В корзину' ?></span>
                         </button>
 
-                        <a href="#popup-preorder"
+                        <a href="#popup-preorder" onclick="ga('send', 'event', 'predzak', 'btn_predzak'); yaCounter47438272.reachGoal('predzak'); return true;"
                            class="btn product__preorder js_product__preorder fancybox" <?= $arResult['CATALOG_QUANTITY'] > 0 ? 'style="display: none"' : 'style="display: block"' ?>>
                             <svg width="34" height="26">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-empty-product"></use>
@@ -286,6 +287,7 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
         </form>
     </div>
 </div>
+
 
 <div class="product-tabs">
     <div class="container">
@@ -388,3 +390,57 @@ $APPLICATION->IncludeComponent(
         "NAME_PRODUCT" => $arResult['~NAME']
     )
 );?>
+<script>
+    dataLayer.push({
+        "ecommerce": {
+            "detail": {
+                "products": [
+                    {
+                        "id": <?= $arResult['ID'] ?>,
+                        "name" : '<?= $arResult['NAME'] ?>',
+                        "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+                    }
+                ]
+            }
+        }
+    });
+
+    gtag('event', 'view_item', {
+        "items": [
+            {
+                "id": <?= $arResult['ID'] ?>,
+                "name" : '<?= $arResult['NAME'] ?>',
+                "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+            }
+        ]
+    });
+
+    document.querySelector('[data-basket-url]').addEventListener('click', function(){
+
+        dataLayer.push({
+            "ecommerce": {
+                "add": {
+                    "products": [
+                        {
+                            "id": <?= $arResult['ID'] ?>,
+                            "name": '<?= $arResult['NAME'] ?>',
+                            "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+                            "quantity": document.querySelector('input[name="QUANTITY"]').value
+                        }
+                    ]
+                }
+            }
+        });
+
+        gtag('event', 'add_to_cart', {
+            "items": [
+                {
+                    "id": <?= $arResult['ID'] ?>,
+                    "name": '<?= $arResult['NAME'] ?>',
+                    "quantity": document.querySelector('input[name="QUANTITY"]').value,
+                    "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+                }
+            ]
+        });
+    }, true);
+</script>

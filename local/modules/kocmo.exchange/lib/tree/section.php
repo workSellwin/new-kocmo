@@ -44,7 +44,10 @@ class Section extends Builder
     {
         if(!count($this->outputArr)){
             $this->fillInOutputArr();
+            $this->outputArr = $this->sortOutputArr();
         }
+//        pr($this->outputArr, 14);
+////        die();
         $length = count($this->outputArr);
 
         foreach( $this->outputArr as $key => $item ){
@@ -61,7 +64,7 @@ class Section extends Builder
             }
             elseif( strlen($item[$this->arParams['PARENT_ID']]) > 0 )
             {
-                if( $this->putChild($item, $this->tree) ) {
+                if( !$this->putChild($item, $this->tree) ) {
                     //unset($this->outputArr[$key]);
                 }
             }
@@ -71,6 +74,31 @@ class Section extends Builder
         {
             $this->createTree();
         }
+    }
+
+    private function sortOutputArr(array &$newArr = []){
+
+        foreach($this->outputArr as $item){
+
+            if($item[$this->arParams['PARENT_ID']] === ''){
+                $newArr[$item[$this->arParams['ID']]] = $item;
+            }
+            elseif( isset($newArr[$item[$this->arParams['PARENT_ID']]]) ){
+                $newArr[$item[$this->arParams['ID']]] = $item;
+            }
+            else{
+                //pr($item,14);
+            }
+        }
+
+        if(count($this->outputArr) > count($newArr)){
+            $this->sortOutputArr($newArr);
+        }
+//        pr( count($this->outputArr), 14);
+//        pr( count($newArr), 14);
+//        pr($newArr, 14);
+//        die();
+        return $newArr;
     }
 
     private function putChild($outputItem, &$treeArr, $depthLvl = 1)

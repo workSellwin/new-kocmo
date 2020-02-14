@@ -21,7 +21,7 @@ if (IsModuleInstalled("iblock")) {
             $dbIBlock = new CIBlockResult($dbIBlock);
             $curIblockID = 0;
             if ($arIBlock = $dbIBlock->GetNext()) {
-                $dbSections = CIBlockSection::GetList(array(), array("IBLOCK_ID" => $arIBlock["ID"]), false, array("ID", "SECTION_PAGE_URL", "PICTURE", "DESCRIPTION", "DEPTH_LEVEL"));
+                $dbSections = CIBlockSection::GetList(array(), array("IBLOCK_ID" => $arIBlock["ID"]), false, array("ID", "SECTION_PAGE_URL", "PICTURE", "DESCRIPTION", "DEPTH_LEVEL",'UF_*'));
                 while ($arSections = $dbSections->GetNext()) {
                     $pictureSrc = CFile::GetFileArray($arSections["PICTURE"]);
 
@@ -35,6 +35,7 @@ if (IsModuleInstalled("iblock")) {
 
                     $arSectionsInfo[crc32($arSections["SECTION_PAGE_URL"])]["PICTURE"] = $pictureSrc ? $arResizePicture["src"] : false;
                     $arSectionsInfo[crc32($arSections["SECTION_PAGE_URL"])]["DESCRIPTION"] = $arSections["DESCRIPTION"];
+                    $arSectionsInfo[crc32($arSections["SECTION_PAGE_URL"])]["URL"] = $arSections["UF_LINK_MENU"];
                     $arBrandFinish = [];
                     if ($arSections['DEPTH_LEVEL'] == 1) {
                         $arBrand = [];
@@ -68,10 +69,20 @@ if (IsModuleInstalled("iblock")) {
 
                         foreach ($arBrand as $item) {
                             $k = strtoupper(substr($item['NAME'], 0, 1));
+//new 06.02.2020
+                            $brandFilter = getBrandFilterName($item['NAME']);
+                            $getStr = '';
+
+                            if(isset($brandFilter) && $brandFilter['filterId']){
+                                $getStr = '?set_filter=y&filter_catalog_prod_45_'
+                                    . $brandFilter['filterId'] . '=Y';
+                            }
+//end new 06.02.2020
                             $arBrandFinish[$k][$n] = [
                                 'NAME'=>$item['NAME'],
-                                'URL'=>$arURL[$item['XML_ID']],
+                                'URL'=> $arSections['SECTION_PAGE_URL'] . $getStr,//$arURL[$item['XML_ID']],//new 06.02.2020
                             ];
+
                             $n++;
                         }
                     }
@@ -87,6 +98,7 @@ if (IsModuleInstalled("iblock")) {
                 }
             }
         }
+
         $obCache->EndDataCache($arSectionsInfo);
     }
 }

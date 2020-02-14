@@ -29,7 +29,7 @@
                             <?
                             $img= trim($arItem['DETAIL_PICTURE_SRC']) ? $arItem['DETAIL_PICTURE_SRC'] : $arItems['PREVIEW_PICTURE_SRC']
                             ?>
-                            <div class="header-basket__item">
+                            <div class="header-basket__item" data-basket-id="<?= $arItem['ID'] ?>">
                                 <div class="header-basket__item-img">
                                     <a href="<?= $arItem['DETAIL_PAGE_URL'] ?>">
                                         <!-- 135 x 135 -->
@@ -86,3 +86,46 @@
         <? AjaxContent::Finish('header_basket_content') ?>
     </div>
 </div>
+<script>
+    if(!window.litleBasketItems) {
+        window.litleBasketItems = <?=CUtil::PhpToJSObject($arItems);?>;
+        let headerBasket = document.getElementById('header_basket');
+
+        headerBasket.addEventListener('click', function (event) {
+
+
+            if (!event.target.closest('.js_header-basket__item-close')) {
+                return false;
+            }
+
+            let basketRowId = event.target.closest('[data-basket-id]').dataset.basketId;
+
+            if(window.litleBasketItems[basketRowId]) {
+
+                dataLayer.push({
+                    "ecommerce": {
+                        "remove": {
+                            "products": [
+                                {
+                                    "id": window.litleBasketItems[basketRowId]["PRODUCT_ID"],
+                                    "name": window.litleBasketItems[basketRowId]["NAME"],
+                                    "quantity": window.litleBasketItems[basketRowId]["QUANTITY"]
+                                }
+                            ]
+                        }
+                    }
+                });
+
+                gtag('event', 'remove_from_cart', {
+                    "items": [
+                        {
+                            "id": litleBasketItems[basketRowId]["PRODUCT_ID"],
+                            "name": litleBasketItems[basketRowId]["NAME"],
+                            "quantity": litleBasketItems[basketRowId]["QUANTITY"]
+                        }
+                    ]
+                });
+            }
+        });
+    }
+</script>

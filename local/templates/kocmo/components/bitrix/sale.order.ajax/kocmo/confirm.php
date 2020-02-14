@@ -12,16 +12,22 @@ if ($arParams["SET_TITLE"] == "Y") {
     $APPLICATION->SetTitle(Loc::getMessage("SOA_ORDER_COMPLETE"));
 }
 ?>
-
 <? if (!empty($arResult["ORDER"])): ?>
     <?
     $order = $arResult['ORDER'];
-    $uid = $order['XML_ID'];
-    /*
-           $ob = new \Lui\Kocmo\Request\Order($order['ID']);
-           $data = $ob->Run();
-        $uid = $data['UID'];
-    */
+    $orderB = \Bitrix\Sale\Order::load($order['ID']);
+    include 'forMarketing.php';
+    $uid = false;
+    /**
+     * Отправка в 1с заказа
+     */
+    \Lui\Kocmo\Helper\Order::Send1c($order['ID']);
+
+
+    $arProp = Order::GetProperty($orderB);
+    $propertyCollection = $orderB->getPropertyCollection();
+    $somePropValue = $propertyCollection->getItemByOrderPropertyId(23);
+    $time = $somePropValue->getViewHtml();
     ?>
     <div class="order-confirmation-wrap">
         <div class="order-confirmation">
@@ -44,9 +50,11 @@ if ($arParams["SET_TITLE"] == "Y") {
                     <div class="order-confirmation__letter-details-item">
                         Доставка: <?= Order::GetDeliveryName($order['DELIVERY_ID']) ?>
                     </div>
-                    <div class="order-confirmation__letter-details-item">
-                        Дата доставки: 22.04.19
-                    </div>
+                    <? if ($arProp['DATE_OF_DELIVERY']) { ?>
+                        <div class="order-confirmation__letter-details-item">
+                            Дата доставки: <?= $arProp['DATE_OF_DELIVERY'] ?> <?= $time ?>
+                        </div>
+                    <? } ?>
                     <div class="order-confirmation__letter-details-item">
                         Оплата: <?= Order::GePaymentName($order['PAY_SYSTEM_ID']) ?>
                     </div>
@@ -62,7 +70,7 @@ if ($arParams["SET_TITLE"] == "Y") {
                     </div>
 
                     <div class="order-confirmation__letter-contacts-phone">
-                        666-55-44
+                        626-14-14
                         <span>все операторы</span>
                     </div>
                 </div>
@@ -140,9 +148,8 @@ if ($arParams["SET_TITLE"] == "Y") {
 <?
 global $USER;
 $ANONYMOUS_USER = 3;
-if($USER->GetID() == $ANONYMOUS_USER){
+if ($USER->GetID() == $ANONYMOUS_USER) {
     $USER->Logout();
 }
-
-
 ?>
+

@@ -32,6 +32,13 @@ class Agents
 
     static public function actualizeStock(){
 
+        $dt = new \DateTime();
+        $hour = $dt->format('G');
+
+        if($hour > 20 || $hour < 8){
+            return 'Kocmo\\Exchange\\Agents::actualizeStock();';
+        }
+
         $bx = StaticFactory::factory(60);
         $bx->actualizeStock();
 
@@ -43,6 +50,19 @@ class Agents
         $bx = StaticFactory::factory(80);
         $bx->update();
 
-        return 'Kocmo\\Exchange\\Agents::start(80);';
+        return 'Kocmo\\Exchange\\Agents::actualizePrices();';
+    }
+
+    static public function updateStock(){
+
+        \CAgent::AddAgent(
+            "Kocmo\Exchange\Agents::start(60);",
+            "kocmo.exchange",
+            "N",
+            40
+        );
+
+        return 'Kocmo\\Exchange\\Agents::updateStock();';
+
     }
 }

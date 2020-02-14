@@ -49,7 +49,6 @@ elseif ($cache->startDataCache()) {
 
     while ($e = $res->fetch()) {
 
-
         if( empty($e['IBLOCK_SECTION_ID']) ){
             continue;
         }
@@ -88,7 +87,6 @@ elseif ($cache->startDataCache()) {
     }
     $cache->endDataCache($sections);
 }
-//pr($sections);
 ?>
 <?if(count($sections)):?>
 

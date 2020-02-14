@@ -1,0 +1,11 @@
+.ie .products-item {
+    width: 360px;
+}
+
+html{
+    display: flex;
+}
+
+body{
+    width: 100%;
+}

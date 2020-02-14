@@ -17,7 +17,7 @@ $frame = $this->createFrame("subscribe-form", false)->begin();
 ?>
 
 <div class="footer-nav-column">
-    <div class="footer-nav__title-submit">подписаться на расслыку</div>
+    <div class="footer-nav__title-submit">подписаться на рассылку</div>
     <div class="box-message" style="margin-bottom: 10px;font-size: 13px;"></div>
     <form id="form_subscribe" class="footer-submit">
         <input type="hidden" name="subscribe_form" value="Y">

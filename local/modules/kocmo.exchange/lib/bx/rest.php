@@ -241,7 +241,7 @@ class Rest extends Helper
 
         foreach ($productQuantity as $id => $quantity) {
 
-            if( isset($productAmount[$id]) ){//есть в магазинах
+            if (isset($productAmount[$id])) {//есть в магазинах
 
                 if ($quantity != $productAmount[$id]) {
                     $obProduct->Update($id, ['QUANTITY' => $productAmount[$id]]);
@@ -258,8 +258,7 @@ class Rest extends Helper
 
                     $event->send();
                 }
-            }
-            else{
+            } else {
 
                 if ($quantity != 0) {
                     $obProduct->Update($id, ['QUANTITY' => 0]);

@@ -22,39 +22,39 @@ use \Bitrix\Main\Localization\Loc;
 
 $this->setFrameMode(true); ?>
 
-    <style>
+<style>
+    .suggestions_sale__btn {
+        text-transform: uppercase;
+        background: #8C249F;
+        color: #fff;
+        font-size: 1.125rem;
+        letter-spacing: 0.02rem;
+        padding: 0 36px;
+        height: 60px;
+        display: inline-block;
+        line-height: 60px;
+        margin: 0 auto;
+        -webkit-transition: 0.1s;
+        -o-transition: 0.1s;
+        -moz-transition: 0.1s;
+        transition: 0.1s;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+
+    @media (max-width: 1023px) {
         .suggestions_sale__btn {
-            text-transform: uppercase;
-            background: #8C249F;
-            color: #fff;
-            font-size: 1.125rem;
-            letter-spacing: 0.02rem;
-            padding: 0 36px;
-            height: 60px;
-            display: inline-block;
-            line-height: 60px;
-            margin: 0 auto;
-            -webkit-transition: 0.1s;
-            -o-transition: 0.1s;
-            -moz-transition: 0.1s;
-            transition: 0.1s;
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            font-size: 0.875rem;
+            height: 35px;
+            padding: 0 15px;
+            line-height: 35px;
         }
-
-
-        @media (max-width: 1023px) {
-            .suggestions_sale__btn {
-                font-size: 0.875rem;
-                height: 35px;
-                padding: 0 15px;
-                line-height: 35px;
-            }
-        }
-    </style>
+    }
+</style>
 
 <?
 
@@ -174,7 +174,9 @@ $generalParams = array(
     'MESS_BTN_COMPARE' => $arParams['~MESS_BTN_COMPARE'],
     'MESS_BTN_SUBSCRIBE' => $arParams['~MESS_BTN_SUBSCRIBE'],
     'MESS_BTN_ADD_TO_BASKET' => $arParams['~MESS_BTN_ADD_TO_BASKET'],
-    'MESS_NOT_AVAILABLE' => $arParams['~MESS_NOT_AVAILABLE']
+    'MESS_NOT_AVAILABLE' => $arParams['~MESS_NOT_AVAILABLE'],
+    "CACHE_TYPE" => "Y",
+    "CACHE_TIME" => "86400",
 );
 
 $obName = 'ob' . preg_replace('/[^a-zA-Z0-9_]/', 'x', $this->GetEditAreaId($navParams['NavNum']));
@@ -189,73 +191,136 @@ $containerName = 'container-' . $navParams['NavNum']; ?>
     ?>
 
     <div class="products">
-            <div class="container">
-                <div class="preloader-wrap">
-                    <div class="products__container">
-                        <?AjaxContent::Start('AJAX_BTN_JS') ;?>
-                        <? if (!empty($arResult['ITEMS']) && !empty($arResult['ITEM_ROWS'])):
-                            $areaIds = array();
+        <div class="container">
+            <div class="preloader-wrap">
+                <div class="products__container">
 
-                            foreach ($arResult['ITEMS'] as $item):
-                                $uniqueId = $item['ID'] . '_' . md5($this->randString() . $component->getAction());
-                                $areaIds[$item['ID']] = $this->GetEditAreaId($uniqueId);
-                                $this->AddEditAction($uniqueId, $item['EDIT_LINK'], $elementEdit);
-                                $this->AddDeleteAction($uniqueId, $item['DELETE_LINK'], $elementDelete, $elementDeleteParams);
-                            endforeach ?>
-                            <!-- items-container -->
-                            <?foreach ($arResult['ITEM_ROWS'] as $rowData):
-                                $rowItems = array_splice($arResult['ITEMS'], 0, $rowData['COUNT']); ?>
+                    <? AjaxContent::Start('AJAX_BTN_JS'); ?>
+                    <div class="container_js">
+                    <? if (!empty($arResult['ITEMS']) && !empty($arResult['ITEM_ROWS'])):
+                        $areaIds = array();
+
+                        foreach ($arResult['ITEMS'] as $item):
+                            $uniqueId = $item['ID'] . '_' . md5($this->randString() . $component->getAction());
+                            $areaIds[$item['ID']] = $this->GetEditAreaId($uniqueId);
+                            $this->AddEditAction($uniqueId, $item['EDIT_LINK'], $elementEdit);
+                            $this->AddDeleteAction($uniqueId, $item['DELETE_LINK'], $elementDelete, $elementDeleteParams);
+                        endforeach ?>
+                        <!-- items-container -->
+                        <?
+                        foreach ($arResult['ITEM_ROWS'] as $rowData):
+                            $rowItems = array_splice($arResult['ITEMS'], 0, $rowData['COUNT']); ?>
+                            <?
+                            foreach ($rowItems as $item):?>
                                 <?
-                                foreach ($rowItems as $item):?>
-                                    <?
-                                    $APPLICATION->IncludeComponent("bitrix:catalog.item", "main-item", Array(
-                                        "RESULT" => array(
-                                            "ITEM" => $item,
-                                            "AREA_ID" => $areaIds[$item["ID"]],
-                                            "TYPE" => $rowData["TYPE"],
-                                            "BIG_LABEL" => "N",
-                                            "BIG_DISCOUNT_PERCENT" => "N",
-                                            "BIG_BUTTONS" => "Y",
-                                            "SCALABLE" => "N",
-                                            'CLASS' => 'swiper-slide products-item',
-                                            'ADD_BASKET' => $arProd,
-                                        ),
-                                        "PARAMS" => $generalParams + array("SKU_PROPS" => $arResult["SKU_PROPS"][$item["IBLOCK_ID"]])
+                                $APPLICATION->IncludeComponent("bitrix:catalog.item", "main-item", Array(
+                                    "RESULT" => array(
+                                        "ITEM" => $item,
+                                        "AREA_ID" => $areaIds[$item["ID"]],
+                                        "TYPE" => $rowData["TYPE"],
+                                        "BIG_LABEL" => "N",
+                                        "BIG_DISCOUNT_PERCENT" => "N",
+                                        "BIG_BUTTONS" => "Y",
+                                        "SCALABLE" => "N",
+                                        'CLASS' => 'swiper-slide products-item',
+                                        'ADD_BASKET' => $arProd,
                                     ),
-                                        $component,
-                                        array('HIDE_ICONS' => 'Y')
-                                    ); ?>
-                                <? endforeach; ?>
-                            <?endforeach;
-                            unset($generalParams, $rowItems);
-                        endif; ?>
-                        <?global $OBJ_ITEMS; ?>
-                        <script type="text/javascript">
-                            if(typeof OBJ_ITEMS != 'undefined'){
-                                var AJAX_ITEMS = <?echo CUtil::PhpToJSObject($OBJ_ITEMS['OBJ_ITEM'])?>;
-                                OBJ_ITEMS = mergeJsObj(OBJ_ITEMS, AJAX_ITEMS);
-                                initBtnItem(OBJ_ITEMS);
-                            }
-                        </script>
-                        <?AjaxContent::Finish('AJAX_BTN_JS')?>
-                    </div>
+                                    "PARAMS" => $generalParams + array("SKU_PROPS" => $arResult["SKU_PROPS"][$item["IBLOCK_ID"]])
+                                ),
+                                    $component,
+                                    array('HIDE_ICONS' => 'Y')
+                                ); ?>
+                            <? endforeach; ?>
+                        <?endforeach;
+                        unset($generalParams, $rowItems);
+                    endif; ?>
 
-                    <div class="preloader" style="display: none;">
-                        <svg width="64" height="64">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-preloader"></use>
-                        </svg>
+
+                    <? global $OBJ_ITEMS; ?>
+                    <script type="text/javascript">
+                        if (typeof OBJ_ITEMS != 'undefined') {
+                            var AJAX_ITEMS = <?echo CUtil::PhpToJSObject($OBJ_ITEMS['OBJ_ITEM'])?>;
+                            OBJ_ITEMS = mergeJsObj(OBJ_ITEMS, AJAX_ITEMS);
+                            initBtnItem(OBJ_ITEMS);
+                        }
+                    </script>
+
+                    <?if ($arResult['NAV_STRING']) {
+                        $NAV_RESULT = $arResult['NAV_RESULT'];
+                        ?>
+                        <input
+                                type="hidden"
+                                data-NavPageNomer="<?= $NAV_RESULT->NavPageNomer; ?>"
+                                data-NavPageCount="<?= $NAV_RESULT->NavPageCount ?>"
+                                value="<?= $NAV_RESULT->PAGEN ?>"
+                        >
+                    <? } ?>
                     </div>
+                    <? AjaxContent::Finish('AJAX_BTN_JS') ?>
                 </div>
 
-                <div data-pagination-num="<?= $navParams['NavNum'] ?>">
-                    <!-- pagination-container -->
-                    <?= $arResult['NAV_STRING'] ?>
-                    <!-- pagination-container -->
+                <div class="preloader" style="display: none;">
+                    <svg width="64" height="64">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-preloader"></use>
+                    </svg>
                 </div>
+            </div>
+
+            <div data-pagination-num="<?= $navParams['NavNum'] ?>">
+                <!-- pagination-container -->
+                <?= $arResult['NAV_STRING'] ?>
+                <!-- pagination-container -->
             </div>
         </div>
     </div>
-
 <? endif; ?>
+<script>
+    var byBtn = document.querySelectorAll('.products-item__btns [data-in-basket="N"]');
+
+    for(let i = 0; i < byBtn.length; i++){
+
+        byBtn[i].addEventListener('click', function(event){
+            let product = event.target.closest('.products-item');
+            let name = product.querySelector('.products-item__title').textContent;
+            let price = parseInt(product.querySelector('.products-item__price').textContent, 10);
+            let id = this.dataset.prodId;
+
+            dataLayer.push({
+                "ecommerce": {
+                    "add": {
+                        "products": [
+                            {
+                                "id": id,
+                                "name": name,
+                                "price": price,
+                                "quantity": 1
+                            }
+                        ]
+                    }
+                }
+            });
+
+            gtag('event', 'add_to_cart', {
+                "items": [
+                    {
+                        "id": id,
+                        "name": name,
+                        "price": price,
+                        "quantity": 1
+                    }
+                ]
+            });
+
+            // if(!window.litleBasketItems){
+            //     window.litleBasketItems = {};
+            // }
+            // window.litleBasketItems[id] = {
+            //     PRODUCT_ID: id,
+            //     NAME: name,
+            //     QUANTITY: 1
+            // };
+        });
+    }
+</script>
 
 

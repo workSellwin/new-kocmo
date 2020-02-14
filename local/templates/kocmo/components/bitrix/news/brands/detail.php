@@ -32,7 +32,6 @@ if($enum_fields = $property_enums->GetNext()) {
     $enum = $enum_fields['VALUE'];
 }
 
-//$APPLICATION->SetTitle($brand);
 ?>
 <?
 $APPLICATION->IncludeComponent("bitrix:news.detail", "brand", Array(
@@ -78,50 +77,123 @@ $APPLICATION->IncludeComponent("bitrix:news.detail", "brand", Array(
         "AJAX_OPTION_HISTORY" => "N"
     )
 ); ?>
-<? global $filter_catalog_prod;
+<?
+
+
+global $filter_sales_prod;
+
+$arParamsFilter = [
+    "IBLOCK_ID" => 2,
+    "FILTER_NAME" => "filter_sales_prod",
+    "PRICE_CODE" => array(
+        0 => "ROZNICHNAYA",
+    ),
+    "CACHE_TYPE" => "A",
+    "CACHE_TIME" => $arParams["CACHE_TIME"],
+    "CACHE_GROUPS" => "N",
+    "SAVE_IN_SESSION" => "N",
+    "XML_EXPORT" => "N",
+    "SECTION_TITLE" => "NAME",
+    "SECTION_DESCRIPTION" => "DESCRIPTION",
+    "HIDE_NOT_AVAILABLE" => "N",
+    "CONVERT_CURRENCY" => "N",
+    "CURRENCY_ID" => $arParams["CURRENCY_ID"],
+    "SEF_MODE" => "N",
+    "SEF_RULE" => $arResult["FOLDER"] . $arResult["URL_TEMPLATES"]["smart_filter"],
+    "SMART_FILTER_PATH" => $arResult["VARIABLES"]["SMART_FILTER_PATH"],
+    "PAGER_PARAMS_NAME" => $arParams["PAGER_PARAMS_NAME"],
+    "INSTANT_RELOAD" => $arParams["INSTANT_RELOAD"],
+    "PROD_SALE_ID" => $PROP["PROD"],
+    "COMPONENT_TEMPLATE" => ".default",
+    "SECTION_CODE" => "",
+    "DISPLAY_ELEMENT_COUNT" => "Y",
+    "SHOW_ALL_WO_SECTION" => "Y",
+    "BREND" => empty($enum) ? $brand : $enum,
+];
+
 $APPLICATION->IncludeComponent(
     "bh:smart_filter_sale",
-    "brands",
-    array(
-        "IBLOCK_ID" => 2,
-        "FILTER_NAME" => "filter_catalog_prod",
-        "PRICE_CODE" => array(
-            0 => "ROZNICHNAYA",
-        ),
-        "CACHE_TYPE" => "A",
-        "CACHE_TIME" => $arParams["CACHE_TIME"],
-        "CACHE_GROUPS" => "N",
-        "SAVE_IN_SESSION" => "N",
-        "XML_EXPORT" => "N",
-        "SECTION_TITLE" => "NAME",
-        "SECTION_DESCRIPTION" => "DESCRIPTION",
-        "HIDE_NOT_AVAILABLE" => "N",
-        "CONVERT_CURRENCY" => "N",
-        "CURRENCY_ID" => $arParams["CURRENCY_ID"],
-        "SEF_MODE" => "N",
-        "SEF_RULE" => $arResult["FOLDER"] . $arResult["URL_TEMPLATES"]["smart_filter"],
-        "SMART_FILTER_PATH" => $arResult["VARIABLES"]["SMART_FILTER_PATH"],
-        "PAGER_PARAMS_NAME" => $arParams["PAGER_PARAMS_NAME"],
-        "INSTANT_RELOAD" => $arParams["INSTANT_RELOAD"],
-        "PROD_SALE_ID" => $PROP["PROD"],
-        "COMPONENT_TEMPLATE" => ".default",
-        "SECTION_CODE" => "",
-        "DISPLAY_ELEMENT_COUNT" => "Y",
-        "SHOW_ALL_WO_SECTION" => "Y",
-    ),
+    ".default",
+    $arParamsFilter,
     false,
     array(
         "HIDE_ICONS" => "N"
     )
-); ?>
+);
+
+
+?>
 <div id="AJAX_FILTER_CONTAINER">
     <?
     if (isset($_REQUEST['ajax_filter']) && $_REQUEST['ajax_filter'] == 'Y') {
         $GLOBALS['APPLICATION']->RestartBuffer();
     }
-//pr($arBrand);
-    $GLOBALS['filter_catalog_prod']['PROPERTY_MARKA_VALUE'] = empty($enum) ? $brand : $enum;
-    //pr( $GLOBALS['filter_catalog_prod']['PROPERTY_MARKA_VALUE'] );
+
+    if(isset($_REQUEST['available_not']) && $_REQUEST['available_not'] == 'y'){
+        $filter_sales_prod['CATALOG_AVAILABLE'] = 'N';
+    }
+
+    if(isset($_REQUEST['available_yes']) && $_REQUEST['available_yes'] == 'y'){
+        $filter_sales_prod['CATALOG_AVAILABLE'] = 'Y';
+    }
+
+    if((isset($_REQUEST['available_not']) && $_REQUEST['available_not'] == 'y') && (isset($_REQUEST['available_yes']) && $_REQUEST['available_yes'] == 'y')){
+        unset($filter_sales_prod['CATALOG_AVAILABLE']);
+    }
+
+
+    //сортировка
+    if(isset($_REQUEST['filter_sort']) && !empty($_REQUEST['filter_sort'])){
+        if($_REQUEST['filter_sort'] == 'price_asc'){
+            $ELEMENT_SORT_FIELD = 'catalog_PRICE_2';
+            $ELEMENT_SORT_ORDER = 'asc';
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+            $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'price_asc';
+        }
+        if($_REQUEST['filter_sort'] == 'price_desc'){
+            $ELEMENT_SORT_FIELD = 'catalog_PRICE_2';
+            $ELEMENT_SORT_ORDER = 'desc';
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+            $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'price_desc';
+        }
+        if($_REQUEST['filter_sort'] == 'az_asc'){
+            $ELEMENT_SORT_FIELD = 'name';
+            $ELEMENT_SORT_ORDER = 'asc';
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+            $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'az_asc';
+        }
+        if($_REQUEST['filter_sort'] == 'az_desc'){
+            $ELEMENT_SORT_FIELD = 'name';
+            $ELEMENT_SORT_ORDER = 'desc';
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] = $ELEMENT_SORT_FIELD;
+            $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] = $ELEMENT_SORT_ORDER;
+            $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = 'az_desc';
+        }
+
+    }else{
+        $ELEMENT_SORT_FIELD = isset($_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD']) && !empty($_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD']) ? $_SESSION['FILTER_SORT']['ELEMENT_SORT_FIELD'] : 'name' ;
+        $ELEMENT_SORT_ORDER = isset($_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER']) && !empty($_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER']) ? $_SESSION['FILTER_SORT']['ELEMENT_SORT_ORDER'] : 'asc' ;
+        $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] = isset($_SESSION['FILTER_SORT']['SELECT_FILTER_SORT']) && !empty($_SESSION['FILTER_SORT']['SELECT_FILTER_SORT']) ? $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT'] : 'az_asc' ;
+    }
+
+    $filter_sales_prod['PROPERTY_MARKA_VALUE'] = empty($enum) ? $brand : $enum;
+
+    $filter_sales_prod = array_merge($filter_sales_prod, array('ID' => $PROP['PROD']));
+
+
+
+    $FILTER['PARAMS'] = $arParamsFilter;
+    $FILTER['PARAMS']['FILTER_PROPERTY_AJAX'] = !empty($filter_sales_prod) && isset($filter_sales_prod)? $filter_sales_prod : false;
+    ?>
+    <script type="text/javascript">
+        var FILTER = <?echo CUtil::PhpToJSObject($FILTER)?>;
+        updateSmartFilter();
+    </script>
+
+    <?
     $APPLICATION->IncludeComponent(
 	"bitrix:catalog.section", 
 	"section", 
@@ -143,7 +215,7 @@ $APPLICATION->IncludeComponent(
 		"CACHE_FILTER" => "N",
 		"CACHE_GROUPS" => "Y",
 		"CACHE_TIME" => "36000000",
-		"CACHE_TYPE" => "A",
+		"CACHE_TYPE" => "N",
 		"COMPATIBLE_MODE" => "Y",
 		"CONVERT_CURRENCY" => "Y",
 		"CURRENCY_ID" => "BYN",
@@ -154,13 +226,13 @@ $APPLICATION->IncludeComponent(
 		"DISCOUNT_PERCENT_POSITION" => "bottom-right",
 		"DISPLAY_BOTTOM_PAGER" => "Y",
 		"DISPLAY_TOP_PAGER" => "N",
-		"ELEMENT_SORT_FIELD" => "sort",
-		"ELEMENT_SORT_FIELD2" => "id",
-		"ELEMENT_SORT_ORDER" => "asc",
-		"ELEMENT_SORT_ORDER2" => "desc",
+        "ELEMENT_SORT_FIELD" => $ELEMENT_SORT_FIELD,
+        //"ELEMENT_SORT_FIELD2" => "name",
+        "ELEMENT_SORT_ORDER" => $ELEMENT_SORT_ORDER,
+        //"ELEMENT_SORT_ORDER2" => isset($_REQUEST['filter_sort']) && $_REQUEST['filter_sort'] == 'sort_increase' ? "asc" : "desc" ,
 		"ENLARGE_PRODUCT" => "PROP",
 		"ENLARGE_PROP" => "ONLINE_STORE",
-		"FILTER_NAME" => "filter_catalog_prod",
+		"FILTER_NAME" => "filter_sales_prod",
 		"HIDE_NOT_AVAILABLE" => "N",
 		"HIDE_NOT_AVAILABLE_OFFERS" => "N",
 		"IBLOCK_ID" => "2",

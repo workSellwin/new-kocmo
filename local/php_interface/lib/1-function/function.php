@@ -54,6 +54,7 @@ if (!function_exists("getChilds")) {
         return $childs;
     }
 }
+
 if (!function_exists("PR")) {
     /**
      * @param $o
@@ -424,7 +425,7 @@ if (!function_exists("OnSalePayOrderActionUpdateEGift")) {
                             if ($num_egift['number']) {
 
                                 CIBlockElement::SetPropertyValuesEx($id, false, ['SHTRIH_KOD' => $num_egift['number']]);
-                                CIBlockElement::SetPropertyValuesEx($id, false, ['DATE' => date('d.m.Y')]);
+                                //CIBlockElement::SetPropertyValuesEx($id, false, ['DATE' => date('d.m.Y')]);
 
 
                                 $arPropCode = ["SHTRIH_KOD", "OPLACHEN", "EMAIL", 'EMAIL_SENT', 'DATE'];
@@ -487,5 +488,51 @@ if(!function_exists('BITGetDeclNum'))
     {
         $array =array(2,0,1,1,1,2);
         return $status[($value%100>4 && $value%100<20)? 2 : $array[($value%10<5)?$value%10:5]];
+    }
+}
+
+if(!function_exists('exchangeChangeQuantity')) {
+    function exchangeChangeQuantity($productId, $quantity, $quantityOld)
+    {
+        //pr([$productId, $quantity, $quantityOld], 17);
+        CModule::IncludeModule("iblock");
+        if($quantity > 0){
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['ONLINE_STORE' => 249]);
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['UNDER_ORDER' => '']);
+        }else{
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['ONLINE_STORE' => '']);
+            CIBlockElement::SetPropertyValuesEx($productId, false, ['UNDER_ORDER' => 250]);
+        }
+    }
+}
+
+if(!function_exists('getBrandFilterName')) {
+
+    function getBrandFilterName ($marka){
+
+        $cache = \Bitrix\Main\Application::getInstance()->getManagedCache();
+        $data = false;
+        $cacheId = 'for_smart_filter_' . $marka;
+        if ($cache->read(36000000, $cacheId)) {
+            $data = $cache->get($cacheId);
+        } else {
+
+            \Bitrix\Main\Loader::includeModule('iblock');
+
+            $res = CIBlockElement::GetList(
+                [],
+                ['IBLOCK_ID' => 2, 'PROPERTY_MARKA_VALUE' => $marka],
+                false,
+                false,
+                ['ID', 'IBLOCK_ID', 'PROPERTY_MARKA', 'NAME', 'IBLOCK_SECTION_ID']
+            );
+
+            if( $fields = $res->fetch() ){
+                $keyCrc = abs(crc32($fields['PROPERTY_MARKA_ENUM_ID']));
+                $data['filterId'] = $keyCrc;
+                $cache->set($cacheId, $data);
+            }
+        }
+        return $data;
     }
 }

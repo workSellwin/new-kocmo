@@ -8,8 +8,8 @@
 
     <div class="basket_item_container">
         <? if ($arItems = $data['ITEMS']) { ?>
-            <? foreach ($arItems as $arItem) { ?>
-                <div class="basket__item">
+            <? foreach ($arItems as $xmlId => $arItem) { ?>
+                <div class="basket__item" data-xml-id="<?=$xmlId?>">
                     <div class="basket__item-img">
                         <? if ($arItem['PREVIEW_PICTURE_SRC']) { ?>
                             <a href="<?= $arItem['DETAIL_PAGE_URL'] ?>">
@@ -132,7 +132,41 @@
     <? } ?>
     <? } ?>
 
-    <script type="text/javascript">
+    <script>
         var obj_items = <?echo CUtil::PhpToJSObject($data['ITEMS'])?>;
         transactionTracker(obj_items);
+    </script>
+    <script>
+        document.getElementById('ajax_basket_item_container').addEventListener('click', function(event){
+
+            if( !event.target.closest('.js_basket__item-close') ){
+                return false;
+            }
+            let itemBlock = event.target.closest('[data-xml-id]');
+            let productXmlId = itemBlock.dataset.xmlId;
+
+            dataLayer.push({
+                "ecommerce": {
+                    "remove": {
+                        "products": [
+                            {
+                                "id": obj_items[productXmlId]["PRODUCT_ID"],
+                                "name": obj_items[productXmlId]["NAME"],
+                                "quantity": itemBlock.querySelector('.counter__input').value
+                            }
+                        ]
+                    }
+                }
+            });
+
+            gtag('event', 'remove_from_cart', {
+                "items": [
+                    {
+                        "id": obj_items[productXmlId]["PRODUCT_ID"],
+                        "name": obj_items[productXmlId]["NAME"],
+                        "quantity": itemBlock.querySelector('.counter__input').value,
+                    }
+                ]
+            });
+        });
     </script>

@@ -1,0 +1,159 @@
+@font-face {
+    font-family: "Gotham Pro";
+    src: url("fonts/GothamProLight.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+/*#filter-category-all, .all_result_title{*/
+/*    display: none;*/
+/*}*/
+#filter-other-result, .filter-other-result{
+    display: none;
+}
+
+.title-search-result{
+    border: 1px solid #c6c6c6;
+    display: none;
+    overflow: hidden;
+    z-index: 205;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.bx_item_block{
+    font-size: 14px;
+    padding-bottom:5px;
+    margin-bottom: 5px;
+    border-bottom:1px solid #ddd;
+}
+
+.all_result,
+.others_result { border: none; }
+
+.all_result { margin-bottom: 0;}
+
+.search-section-list{
+    display: flex;
+    justify-content:start;
+    flex-wrap:wrap;
+    border-bottom: solid rgb(234, 234, 234) 1px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    list-style-type: none;
+}
+.search-section-list li{
+    padding-bottom: 10px;
+}
+.search-section-list li>a{
+    text-decoration: underline;
+    padding-right: 15px;
+}
+.search-section-list li>a:hover{
+     text-decoration: none;
+ }
+.bx_searche{
+    overflow: hidden;
+}
+#filter-category-1{
+    overflow: hidden;
+    height: 370px;
+}
+.brand-text-block{
+    width:65%;
+    float: left;
+}
+.filter-elem-price-block{
+    width:35%;
+    float: left;
+}
+.filter-brand-name{
+    font-family: 'Gotham Pro';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 100%;
+    color: #8C249F;
+    display: block;
+    padding-bottom: 5px;
+}
+.filter-elem-text{
+    font-family: 'Gotham Pro';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.01em;
+    color: #333131;
+}
+.bx_price{
+    font-family: 'Gotham Pro';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 120%;
+    letter-spacing: 0.04em;
+    color: #D01C60;
+}
+.bx_price .old{
+    font-family: 'Gotham Pro';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 120%;
+    letter-spacing: 0.04em;
+    color: rgb(135, 138, 138);
+}
+.others_result .bx_item_element a,
+.all_result .bx_item_element a{
+    font-family: 'Gotham Pro';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 100%;
+    color: #8C249F;
+}
+#filter-other-result, #filter-category-all{
+    height: 17px;
+    margin-top: 18px;
+}
+.others_result .bx_item_element, .all_result .bx_item_elemen{
+    text-align: center;
+}
+.svg-arrow-right{
+    padding-left:5px;
+}
+.filter-item__labels{
+    z-index: 5;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.filter-item__label{
+    border-width: 10px 5px;
+    color: rgb(255, 255, 255);
+    width: auto;
+    height: 0;
+    border-color: rgba(0, 0, 0, 0);
+    border-style: solid;
+    line-height: 0;
+    padding: 0 6px;
+    letter-spacing: -0.02rem;
+    font-size: 11px;
+    text-transform: uppercase;
+    text-align: center;
+    flex: none;
+}
+.filter-item__label--discount {
+    border-top-color: #8C249F;
+    border-bottom-color: #8C249F;
+    display: inline-block;
+}
+.bx_img_element .bx_image{
+    /*width: 75px;*/
+    /*height: 75px;*/
+    background-repeat: no-repeat;
+    float: left;
+}
+/*.title-search-result{*/
+/*    display:block !important;*/
+/*}*/

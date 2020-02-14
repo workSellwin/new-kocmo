@@ -3,6 +3,7 @@
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
 use Lui\Kocmo\Request\Post\SetPayment;
+use Bitrix\Sale;
 
 define('NO_IMG_PATH', '/upload/base/no_image.png');
 define('NO_IMG_PATH_225', '/upload/base/no_image_225.png');
@@ -174,3 +175,40 @@ if(!function_exists('exchangeChangeQuantity')) {
         }
     }
 }
+
+AddEventHandler("main", "OnBeforeEventSend", "sendMailNewOrder");
+
+function sendMailNewOrder(&$arFields, &$eventMessage){
+
+    if( $eventMessage['ID'] == 95 && intval($arFields['ORDER_ID']) > 0 ){
+
+        $order = Sale\Order::load($arFields['ORDER_ID']);
+        $deliveryIds = $order->getDeliveryIdList();
+
+        if( in_array(2, $deliveryIds) || in_array(4, $deliveryIds)){
+
+            $propertyCollection = $order->getPropertyCollection();
+            $properties = $propertyCollection->getArray()['properties'];
+            $properties = array_column($properties, null, 'CODE');
+            $deliveryTime = $properties['TIME_OF_DELIVERY'];
+            $deliveryTimeStr = $deliveryTime['OPTIONS'][$deliveryTime['VALUE'][0]];
+            $arFields['DELIVERY_TIME'] = $deliveryTimeStr;
+            $eventMessage['MESSAGE'] = str_replace('display:none;',' ',$eventMessage['MESSAGE']);
+            $eventMessage['MESSAGE_PHP'] = str_replace('display:none;',' ',$eventMessage['MESSAGE_PHP']);
+            //file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/MESSAGE_PHP.txt', print_r($eventMessage['MESSAGE_PHP'], true));
+        }
+
+        $basket = $order->getBasket();
+        $fullPrice = $basket->getBasePrice();
+        $discountPrice = $basket->getPrice();
+        $economy = round($fullPrice - $discountPrice, 2);
+        $economy = $economy > 0 ? $economy : 0;
+
+        $arFields['YOUR_ECONOMY'] = $economy;
+
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/TEST0.txt', print_r($eventMessage, true));
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/TEST2.txt', print_r($arFields, true));
+    }
+
+}
+
