@@ -4,7 +4,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?><? if 
     </div>
 <? } ?>
 </div>
-
 </main>
 
 <footer class="footer">
@@ -50,8 +49,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?><? if 
         УНП 191060401 <br>
         Регистрационный номер в Торговом реестре Республики Беларусь 465316 от 12 ноября 2019 года
     </div>
-
-
 </footer>
 
 <div id="popup-preorder-item" class="popup popup-preorder" style="display: none;">
@@ -106,65 +103,45 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?><? if 
     var OBJ_ITEMS = <?echo CUtil::PhpToJSObject($OBJ_ITEMS['OBJ_ITEM'])?>;
 </script>
 <script>
-var phone = document.getElementsByClassName('ga_ym_t');
-var mail = document.getElementsByClassName('ga_ym_m');
-//console.log(mail);
-for (i=0; i< phone.length; i++){
-  phone[i].onclick = function(e) {
+    var phone = document.getElementsByClassName('ga_ym_t');
+    var mail = document.getElementsByClassName('ga_ym_m');
+    //console.log(mail);
+    for (i=0; i< phone.length; i++){
+        phone[i].onclick = function(e) {
 
-      //console.log('click');
-      ga('send', 'event', 'tel-info', 'ClickTel');
-      yaCounter47438272.reachGoal('ClickTelYM');
-      return true;
-  };
-  phone[i].oncopy = function(e) {
-      console.log('click');
-      ga('send', 'event', 'tel-info', 'CopyTel');
-      yaCounter47438272.reachGoal('CopyTelYM');
-      return true;
-  };
-  phone[i].oncontextmenu = function(e) {
-      ga('send', 'event', 'tel-info', 'RightTel');
-      yaCounter47438272.reachGoal('RightClickTelYM');
-      return true;
-  }
-}
-for (i=0; i< mail.length; i++){
-  mail[i].click = function(e) {
-      ga('send', 'event', 'mail-info', 'ClickMail');
-      yaCounter47438272.reachGoal('ClickMailYM');;
-      return true;
-  };
-  mail[i].oncopy = function(e) {
-      ga('send', 'event', 'mail-info', 'CopyMail');
-      yaCounter47438272.reachGoal('CopyMailYM');
-      return true;
-  };
-  mail[i].oncontextmenu = function(e) {
-      ga('send', 'event', 'mail-info', 'RightMail');
-      yaCounter47438272.reachGoal('RightClickMailYM');
-      return true;
-  }
-}
-</script>
-<!-- Yandex.Metrika counter -->
-<script>
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-    ym(47438272, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:true,
-        ecommerce:"dataLayer"
-    });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/47438272" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
-<script>
-    window.dataLayer = window.dataLayer || [];
+            ga('send', 'event', 'tel-info', 'ClickTel');
+            yaCounter47438272.reachGoal('ClickTelYM');
+            return true;
+        };
+        phone[i].oncopy = function(e) {
+            console.log('click');
+            ga('send', 'event', 'tel-info', 'CopyTel');
+            yaCounter47438272.reachGoal('CopyTelYM');
+            return true;
+        };
+        phone[i].oncontextmenu = function(e) {
+            ga('send', 'event', 'tel-info', 'RightTel');
+            yaCounter47438272.reachGoal('RightClickTelYM');
+            return true;
+        }
+    }
+    for (i=0; i< mail.length; i++){
+        mail[i].click = function(e) {
+            ga('send', 'event', 'mail-info', 'ClickMail');
+            yaCounter47438272.reachGoal('ClickMailYM');;
+            return true;
+        };
+        mail[i].oncopy = function(e) {
+            ga('send', 'event', 'mail-info', 'CopyMail');
+            yaCounter47438272.reachGoal('CopyMailYM');
+            return true;
+        };
+        mail[i].oncontextmenu = function(e) {
+            ga('send', 'event', 'mail-info', 'RightMail');
+            yaCounter47438272.reachGoal('RightClickMailYM');
+            return true;
+        }
+    }
 </script>
 <?
 if (intval($_GET['PAGEN_1']) > 1) {
@@ -182,7 +159,6 @@ if (intval($_GET['PAGEN_1']) > 1) {
     }
 }
 ?>
-
 <?
 if (intval($_GET['PAGEN_2']) > 1) {
 
@@ -202,15 +178,51 @@ if (intval($_GET['PAGEN_2']) > 1) {
 <?
 ///require_once $_SERVER['DOCUMENT_ROOT'] . '/include/first-visit.php';
 ?>
-<? $APPLICATION->IncludeComponent(
-    "bitrix:main.include",
-    "",
-    Array(
-        "AREA_FILE_SHOW" => "file",
-        "PATH" => SITE_DIR . "include/mob_search.php",
-        "AREA_FILE_RECURSIVE" => "N",
-        "EDIT_MODE" => "html",
-    )
-); ?>
+<?if($_GET['tsearch'] == 'new'):?>
+    <?$APPLICATION->IncludeComponent("bitrix:search.title", "base_mob",Array(
+            "SHOW_INPUT" => "Y",
+            "INPUT_ID" => "title-search-input-mob",
+            "CONTAINER_ID" => "mob-search",
+            "PRICE_CODE" => array("ROZNICHNAYA","AKTSIONNAYA"),
+            "PRICE_VAT_INCLUDE" => "Y",
+            "PREVIEW_TRUNCATE_LEN" => "150",
+            "SHOW_PREVIEW" => "Y",
+            "PREVIEW_WIDTH" => "75",
+            "PREVIEW_HEIGHT" => "75",
+            "CONVERT_CURRENCY" => "Y",
+            "CURRENCY_ID" => "BYN",
+            "PAGE" => "#SITE_DIR#catalog/",
+            "NUM_CATEGORIES" => "6",
+            "TOP_COUNT" => "20",
+            "ORDER" => "date",
+            "USE_LANGUAGE_GUESS" => "Y",
+            "CHECK_DATES" => "Y",
+            "SHOW_OTHERS" => "Y",
+            "CATEGORY_1_TITLE" => "Каталог",
+            "CATEGORY_1" => array("iblock_catalog"),
+            "CATEGORY_1_iblock_catalog" => "all",
+            "CATEGORY_OTHERS_TITLE" => "Прочее"
+        )
+    );?>
+<?else:?>
+    <? $APPLICATION->IncludeComponent(
+        "bitrix:main.include",
+        "",
+        Array(
+            "AREA_FILE_SHOW" => "file",
+            "PATH" => SITE_DIR . "include/mob_search.php",
+            "AREA_FILE_RECURSIVE" => "N",
+            "EDIT_MODE" => "html",
+        )
+    ); ?>
+<?endif;?>
+<?if($USER->IsAdmin()):?>
+    <script>
+        var lazyLoadInstance = new LazyLoad({
+            elements_selector: ".lazy"
+        });
+        lazyLoadInstance.update();
+    </script>
+<?endif;?>
 </body>
 </html>

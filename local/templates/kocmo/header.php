@@ -96,13 +96,12 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
         <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
     <?endif;?>
 </head>
-
+<body>
 <? $APPLICATION->IncludeComponent(
     "h2o:favorites.add",
     "list",
     Array()
 ); ?>
-<body>
 <!-- Yandex.Metrika counter -->
 <script>
     (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};

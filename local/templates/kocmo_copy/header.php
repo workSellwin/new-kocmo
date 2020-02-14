@@ -5,22 +5,22 @@ use Bitrix\Main\Page\Asset;
 use Lui\Kocmo\IncludeComponent as Component;
 use Lui\Kocmo\PropertyPage;
 
-$redirects = include $_SERVER['DOCUMENT_ROOT'] . '/include/redirects.php';
-//pr( $redirects, 14);
-$url = $_SERVER['REQUEST_URI'];
-$pos = strpos($_SERVER['REQUEST_URI'], '?');
+//$redirects = include $_SERVER['DOCUMENT_ROOT'] . '/include/redirects.php';
+//
+//$url = $_SERVER['REQUEST_URI'];
+//$pos = strpos($_SERVER['REQUEST_URI'], '?');
+//
+//if( $pos === false){
+//    $url = $_SERVER['REQUEST_URI'];
+//}
+//else{
+//    $url = substr($_SERVER['REQUEST_URI'], 0, $pos);
+//}
 
-if( $pos === false){
-    $url = $_SERVER['REQUEST_URI'];
-}
-else{
-    $url = substr($_SERVER['REQUEST_URI'], 0, $pos);
-}
-
-if($redirects[ $url ] && false){
-    header('Location: ' . 'http://' . $_SERVER['SERVER_NAME'] . $redirects[$url] );
-    exit;
-}
+//if($redirects[ $url ] && false){
+//    header('Location: ' . 'http://' . $_SERVER['SERVER_NAME'] . $redirects[$url] );
+//    exit;
+//}
 
 global $OBJ_ITEMS;
 CJSCore::Init(array("date"));
@@ -30,7 +30,7 @@ if (!is_object($USER)) $USER = new \CUser;
 Loc::loadMessages(__FILE__);
 $obAsset = Asset::getInstance();
 $obPage = new PropertyPage();
-define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
+define('KOCMO_TEMPLATE_PATH', '/local/templates/kocmo/imposition/build/assets');
 ?>
 
 <!DOCTYPE html>
@@ -43,30 +43,19 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
     <meta name="format-detection" content="address=no">
     <title><? $APPLICATION->ShowTitle() ?></title>
 
-<?if(!$USER->IsAdmin() || true):?>
-<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-	  ga('create', 'UA-117911007-1', 'auto');
-	  ga('require', 'displayfeatures');
-	  ga('send', 'pageview');
-
-</script>
-<?else:?>
-    <!-- Global Site Tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117911007-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-117911007-1');
-        gtag('event', 'page_view', { 'send_to': 'UA-117911007-1' });
-    </script>
-<?endif;?>
+    <?if(true):?>
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117911007-1"></script>
+<!--        <script>-->
+<!--            window.dataLayer = window.dataLayer || [];-->
+<!--            function gtag(){dataLayer.push(arguments);}-->
+<!--            gtag('js', new Date());-->
+<!---->
+<!--            gtag('config', 'UA-117911007-1');-->
+<!--            gtag('event', 'page_view', { 'send_to': 'UA-117911007-1' });-->
+<!--            //('require', 'ec');-->
+<!--        </script>-->
+    <?endif;?>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -74,8 +63,6 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
     <link rel="manifest" href="/manifest.json">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="theme-color" content="#ffffff">
-
-
     <?
     // CSS
     $obAsset->addCss("/bitrix/css/main/font-awesome.css");
@@ -85,38 +72,84 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
     //  JS
     $obAsset->addJs(KOCMO_TEMPLATE_PATH . "/js/libs.js");
     $obAsset->addJs(KOCMO_TEMPLATE_PATH . "/js/main.js");
-    $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/jquery.maskedinput.min.js"); // https://itchief.ru/lessons/javascript/input-mask-for-html-input-element
+    $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/jquery.maskedinput.min.js");// https://itchief.ru/lessons/javascript/input-mask-for-html-input-element
     $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/script_costum.js");
-    $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/retailrocket.js");
-    $obAsset->addJs( "https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0");
+    //$obAsset->addJs(SITE_TEMPLATE_PATH . "/js/retailrocket.js");
+    //$obAsset->addJs( "https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0");
     ?>
+<!--    <script src="--><?//=SITE_TEMPLATE_PATH . "/js/retailrocket.js"?><!--" async></script>-->
+<!--    <script src="https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0" async></script>-->
     <? $APPLICATION->ShowHead(); ?>
+    <script charset="UTF-8" src="//web.webpushs.com/js/push/d4890b712f6fb2ad2f6031f129ac63a7_1.js" async></script>
 
+    <?if($USER->IsAdmin()):?>
+        <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
+    <?endif;?>
 </head>
-
+<body>
+<script>
+    window.afterUserActionsScript = [];
+</script>
 <? $APPLICATION->IncludeComponent(
     "h2o:favorites.add",
     "list",
     Array()
 ); ?>
-<body>
+<script>
+window.afterUserActionsScript.push(function() {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-117911007-1');
+    gtag('event', 'page_view', { 'send_to': 'UA-117911007-1' });
+});
+</script>
+<script>
+    window.afterUserActionsScript.push(function() {
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () {
+                (m[i].a = m[i].a || []).push(arguments)
+            };
+            m[i].l = 1 * new Date();
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(47438272, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true,
+            webvisor: true,
+            ecommerce: "dataLayer"
+        });
+
+        window.dataLayer = window.dataLayer || [];
+    });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/47438272" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+<!-- /Yandex.Metrika counter -->
 <!-- Facebook Pixel Code -->
 <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '494031391144532');
-  fbq('track', 'PageView');
+window.afterUserActionsScript.push(function() {
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '494031391144532');
+    fbq('track', 'PageView');
+});
 </script>
 <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?..."
-/></noscript>
+               src="https://www.facebook.com/tr?..."
+    /></noscript>
 <!-- End Facebook Pixel Code -->
+
 <? $APPLICATION->ShowPanel() ?>
 <? Component::AdvertisingBanner(['template' => 'top', 'QUANTITY' => '1', 'TYPE' => 'MAIN']) ?>
 <header class="header">
@@ -154,18 +187,45 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
                     <span class="mobile-burger__line"></span>
                 </div>
 
-                <form class="header-search field-bordered" method="get" action="/catalog/" name="">
-                    <button type="submit" value="" class="header-search__submit">
-                        <svg width="20" height="18">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-magnifier"></use>
-                        </svg>
-                    </button>
-                    <input type="text" name="q"
-                           value="<?= htmlspecialchars($_REQUEST['q']) ? htmlspecialchars($_REQUEST['q']) : '' ?>"
-                           class="header-search__text"
-                           placeholder="Введите свой поисковый запрос">
-                </form>
-
+                <?if($_GET['tsearch'] == 'new'):?>
+                    <?$APPLICATION->IncludeComponent("bitrix:search.title", "base",Array(
+                            "SHOW_INPUT" => "Y",
+                            "INPUT_ID" => "title-search-input",
+                            "CONTAINER_ID" => "title-search",
+                            "PRICE_CODE" => array("ROZNICHNAYA","AKTSIONNAYA"),
+                            "PRICE_VAT_INCLUDE" => "Y",
+                            "PREVIEW_TRUNCATE_LEN" => "150",
+                            "SHOW_PREVIEW" => "Y",
+                            "PREVIEW_WIDTH" => "75",
+                            "PREVIEW_HEIGHT" => "75",
+                            "CONVERT_CURRENCY" => "Y",
+                            "CURRENCY_ID" => "BYN",
+                            "PAGE" => "#SITE_DIR#catalog/",
+                            "NUM_CATEGORIES" => "6",
+                            "TOP_COUNT" => "20",
+                            "ORDER" => "date",
+                            "USE_LANGUAGE_GUESS" => "Y",
+                            "CHECK_DATES" => "Y",
+                            "SHOW_OTHERS" => "Y",
+                            "CATEGORY_1_TITLE" => "Каталог",
+                            "CATEGORY_1" => array("iblock_catalog"),
+                            "CATEGORY_1_iblock_catalog" => "all",
+                            "CATEGORY_OTHERS_TITLE" => "Прочее"
+                        )
+                    );?>
+                <?else:?>
+                    <form class="header-search field-bordered" method="get" action="/catalog/" name="">
+                        <button type="submit" value="" class="header-search__submit">
+                            <svg width="20" height="18">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-magnifier"></use>
+                            </svg>
+                        </button>
+                        <input type="text" name="q"
+                               value="<?= htmlspecialchars($_REQUEST['q']) ? htmlspecialchars($_REQUEST['q']) : '' ?>"
+                               class="header-search__text"
+                               placeholder="Введите свой поисковый запрос">
+                    </form>
+                <?endif;?>
                 <a <?= URL() == '/' ? '' : 'href="/"' ?> class="header__middle-logo">
                     <img src="<?= KOCMO_TEMPLATE_PATH?>/images/logo.png" alt="" class="header-logo">
                     <img src="<?= KOCMO_TEMPLATE_PATH?>/images/logo-mobile.png" alt="" class="header-logo-mobile">
@@ -205,7 +265,7 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
                         <? AjaxContent::Finish('header_basket') ?>
                     <? } ?>
                     <? if ($USER->IsAuthorized()) { ?>
-                            <span  class="personality-state__item personality-state__item--registered">
+                        <span  class="personality-state__item personality-state__item--registered">
                                 <svg width="25" height="25">
                                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-cabinet"></use>
                                 </svg>
@@ -338,4 +398,4 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
         </div>
         <div class="container">
 
-<? endif; ?>
+            <? endif; ?>
