@@ -29,6 +29,7 @@ class Order extends Base
     {
         $ob = new  \Lui\Kocmo\Helper\OrderJson($this->id);
         $json = $ob->GetsJson();
+        //file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/last_order_json' . time() . '.txt', print_r($json, true) );
         Loader::includeSharewareModule('kocmo.exchange');
         try {
             $client = new \GuzzleHttp\Client();

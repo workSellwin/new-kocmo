@@ -22,14 +22,14 @@ $startName = implode(' ', array_slice($arName, 0,-1));
         <div class="about-us__inner">
             <? if ($picture = $arResult['PREVIEW_PICTURE']) { ?>
                 <div class="about-us__img">
-                    <img src="<?= $picture['SRC'] ?>" width="720" height="486" alt="<?= $picture['ALT'] ?>"
+                    <img src="<?=WHITE_SQ_330_100?>" data-defer-src="<?= $picture['SRC'] ?>" width="720" height="486" alt="<?= $picture['ALT'] ?>"
                          title="<?= $picture['TITLE'] ?>">
                 </div>
             <? } ?>
             <div class="about-us__info">
                 <div class="about-us__title"><?= $startName ?> <span><?= $endName ?></span></div>
                 <p>
-                    <? echo $arResult['PREVIEW_TEXT'] ?>
+                    <?= $arResult['PREVIEW_TEXT'] ?>
                 </p>
                 <div class="about-us__footer">
                     <a href="<?= $link; ?>" class="about-us__footer-lnk">

@@ -109,7 +109,8 @@
                                 {
                                     "id": window.litleBasketItems[basketRowId]["PRODUCT_ID"],
                                     "name": window.litleBasketItems[basketRowId]["NAME"],
-                                    "quantity": window.litleBasketItems[basketRowId]["QUANTITY"]
+                                    "quantity": window.litleBasketItems[basketRowId]["QUANTITY"],
+                                    "price": window.litleBasketItems[basketRowId]["PRICE"],
                                 }
                             ]
                         }
@@ -121,9 +122,16 @@
                         {
                             "id": litleBasketItems[basketRowId]["PRODUCT_ID"],
                             "name": litleBasketItems[basketRowId]["NAME"],
-                            "quantity": litleBasketItems[basketRowId]["QUANTITY"]
+                            "quantity": litleBasketItems[basketRowId]["QUANTITY"],
+                            "price": window.litleBasketItems[basketRowId]["PRICE"],
                         }
                     ]
+                });
+                console.log({
+                    "id": litleBasketItems[basketRowId]["PRODUCT_ID"],
+                    "name": litleBasketItems[basketRowId]["NAME"],
+                    "quantity": litleBasketItems[basketRowId]["QUANTITY"],
+                    "price": window.litleBasketItems[basketRowId]["PRICE"],
                 });
             }
         });

@@ -6,7 +6,7 @@ use Lui\Kocmo\IncludeComponent as Component;
 use Lui\Kocmo\PropertyPage;
 
 $redirects = include $_SERVER['DOCUMENT_ROOT'] . '/include/redirects.php';
-//pr( $redirects, 14);
+
 $url = $_SERVER['REQUEST_URI'];
 $pos = strpos($_SERVER['REQUEST_URI'], '?');
 
@@ -58,15 +58,14 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
 <?else:?>
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117911007-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-117911007-1');
-        gtag('event', 'page_view', { 'send_to': 'UA-117911007-1' });
-        //('require', 'ec');
-    </script>
+<!--    <script>-->
+<!--        window.dataLayer = window.dataLayer || [];-->
+<!--        function gtag(){dataLayer.push(arguments);}-->
+<!--        gtag('js', new Date());-->
+<!---->
+<!--        gtag('config', 'UA-117911007-1');-->
+<!--        gtag('event', 'page_view', { 'send_to': 'UA-117911007-1' });-->
+<!--    </script>-->
 <?endif;?>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -75,6 +74,8 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
     <link rel="manifest" href="/manifest.json">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="theme-color" content="#ffffff">
+
+
     <?
     // CSS
     $obAsset->addCss("/bitrix/css/main/font-awesome.css");
@@ -86,34 +87,56 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
     $obAsset->addJs(KOCMO_TEMPLATE_PATH . "/js/main.js");
     $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/jquery.maskedinput.min.js"); // https://itchief.ru/lessons/javascript/input-mask-for-html-input-element
     $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/script_costum.js");
-    $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/retailrocket.js");
-    $obAsset->addJs( "https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0");
+    $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/image-defer.min.js");
+    //$obAsset->addJs(SITE_TEMPLATE_PATH . "/js/retailrocket.js");
+    //$obAsset->addJs( "https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0");
     ?>
+    <script src="<?=SITE_TEMPLATE_PATH . "/js/retailrocket.js"?>" async></script>
+    <script src="https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0" async></script>
     <? $APPLICATION->ShowHead(); ?>
     <script charset="UTF-8" src="//web.webpushs.com/js/push/d4890b712f6fb2ad2f6031f129ac63a7_1.js" async></script>
-
-    <?if($USER->IsAdmin()):?>
-        <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
-    <?endif;?>
 </head>
 <body>
+<script>
+    window.afterUserActionsScript = [];
+</script>
 <? $APPLICATION->IncludeComponent(
     "h2o:favorites.add",
     "list",
     Array()
 ); ?>
+<script>
+    function gtag(){dataLayer.push(arguments);}
+
+    //window.afterUserActionsScript.push(function() {
+        window.dataLayer = window.dataLayer || [];
+
+        gtag('js', new Date());
+        gtag('config', 'UA-117911007-1');
+        gtag('event', 'page_view', { 'send_to': 'UA-117911007-1' });
+    //});
+</script>
 <!-- Yandex.Metrika counter -->
 <script>
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    window.afterUserActionsScript.push(function() {
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () {
+                (m[i].a = m[i].a || []).push(arguments)
+            };
+            m[i].l = 1 * new Date();
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-    ym(47438272, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:true,
-        ecommerce:"dataLayer"
+        ym(47438272, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true,
+            webvisor: true,
+            ecommerce: "dataLayer"
+        });
+
+        window.dataLayer = window.dataLayer || [];
     });
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/47438272" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
@@ -123,16 +146,18 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
 </script>
 <!-- Facebook Pixel Code -->
 <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '494031391144532');
-  fbq('track', 'PageView');
+    window.afterUserActionsScript.push(function() {
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '494031391144532');
+        fbq('track', 'PageView');
+    });
 </script>
 <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?..."
@@ -145,12 +170,12 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
         <div class="header__top">
             <div class="container header__top-inner">
                 <div class="header-place">
-                    <a href="#" class="header-place__item">
+<!--                    <a href="#" class="header-place__item">
                         <svg width="16" height="21">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-location"></use>
                         </svg>
                         <span>Ваш город:</span> Минск
-                    </a>
+                    </a>-->
                     <a href="/about/stores/" class="header-place__item">
                         <svg width="21" height="21">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-find-shop"></use>
@@ -176,10 +201,10 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
                 </div>
 
                 <?if($_GET['tsearch'] == 'new'):?>
-                    <?$APPLICATION->IncludeComponent("bitrix:search.title", "base",Array(
+                    <?$APPLICATION->IncludeComponent("kocmo:search.title.desc", "base",Array(
                             "SHOW_INPUT" => "Y",
-                            "INPUT_ID" => "title-search-input",
-                            "CONTAINER_ID" => "title-search",
+                            "INPUT_ID" => "title-search-input-desktop",
+                            "CONTAINER_ID" => "title-search-desktop",
                             "PRICE_CODE" => array("ROZNICHNAYA","AKTSIONNAYA"),
                             "PRICE_VAT_INCLUDE" => "Y",
                             "PREVIEW_TRUNCATE_LEN" => "150",
@@ -192,7 +217,7 @@ define('KOCMO_TEMPLATE_PATH', SITE_TEMPLATE_PATH . '/imposition/build/assets');
                             "NUM_CATEGORIES" => "6",
                             "TOP_COUNT" => "20",
                             "ORDER" => "date",
-                            "USE_LANGUAGE_GUESS" => "Y",
+                            "USE_LANGUAGE_GUESS" => "N",
                             "CHECK_DATES" => "Y",
                             "SHOW_OTHERS" => "Y",
                             "CATEGORY_1_TITLE" => "Каталог",

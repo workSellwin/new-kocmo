@@ -146,13 +146,13 @@
 
                     <div class="cabinet-profile__fields-row">
                         <div class="form-field form-field--full-width">
-                            <select name="user-skin" class="js_custom-select">
-                                <option value="default"<? if (empty($arResult['AR_USER']['UF_SKIN'])): ?> selected<? endif; ?>>
+                            <select name="user-hair" class="js_custom-select">
+                                <option value="default"<? if (empty($arResult['AR_USER']['UF_HAIR'])): ?> selected<? endif; ?>>
                                     Выберите цвет волос
                                 </option>
-                                <? foreach ($arResult['HL_SKINS'] as $skin): ?>
-                                    <option value="<?= $skin['ID'] ?>"<? if ($arResult['AR_USER']['UF_SKIN'] == $skin['ID']): ?> selected<? endif; ?>>
-                                        <?= $skin['UF_NAME'] ?>
+                                <? foreach ($arResult['HL_HAIRS'] as $hair): ?>
+                                    <option value="<?= $hair['ID'] ?>"<? if ($arResult['AR_USER']['UF_HAIR'] == $hair['ID']): ?> selected<? endif; ?>>
+                                        <?= $hair['UF_NAME'] ?>
                                     </option>
                                 <? endforeach; ?>
                             </select>
@@ -161,13 +161,13 @@
 
                     <div class="cabinet-profile__fields-row">
                         <div class="form-field form-field--full-width">
-                            <select name="user-hair" class="js_custom-select">
-                                <option value="default"<? if (empty($arResult['AR_USER']['UF_HAIR'])): ?> selected<? endif; ?>>
+                            <select name="user-skin" class="js_custom-select">
+                                <option value="default"<? if (empty($arResult['AR_USER']['UF_SKIN'])): ?> selected<? endif; ?>>
                                     Выберите тип кожи
                                 </option>
-                                <? foreach ($arResult['HL_HAIRS'] as $hair): ?>
-                                    <option value="<?= $hair['ID'] ?>"<? if ($arResult['AR_USER']['UF_HAIR'] == $hair['ID']): ?> selected<? endif; ?>>
-                                        <?= $hair['UF_NAME'] ?>
+                                <? foreach ($arResult['HL_SKINS'] as $skin): ?>
+                                    <option value="<?= $skin['ID'] ?>"<? if ($arResult['AR_USER']['UF_SKIN'] == $skin['ID']): ?> selected<? endif; ?>>
+                                        <?= $skin['UF_NAME'] ?>
                                     </option>
                                 <? endforeach; ?>
                             </select>

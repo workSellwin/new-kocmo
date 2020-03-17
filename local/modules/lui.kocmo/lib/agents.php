@@ -15,11 +15,12 @@ class Agents
     public static function Sends1C()
     {
         \CModule::IncludeModule('sale');
+        \CModule::IncludeModule('lui.kocmo');
         $dbRes = \Bitrix\Sale\Order::getList(['order' => ['ID' => 'DESC',], 'select' => ["ID",], 'limit' => 10]);
         $arOrder = array_column($dbRes->fetchAll(), 'ID');
         foreach ($arOrder as $orderId) {
             $order = \Bitrix\Sale\Order::load($orderId);
-            $arProp = Lui\Kocmo\Helper\Order::GetProperty($order);
+            $arProp = \Lui\Kocmo\Helper\Order::GetProperty($order);
             if (!$arProp['UID']) {
                 \Lui\Kocmo\Helper\Order::Send1c($orderId);
             }

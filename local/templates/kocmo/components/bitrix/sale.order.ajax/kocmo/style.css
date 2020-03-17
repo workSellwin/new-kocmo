@@ -1,0 +1,17 @@
+#bx-soa-order-form .send-order-fields .form-field{
+    margin-bottom: 33px;
+}
+@media (max-width: 1023px){
+    #bx-soa-order-form .send-order-fields__four{
+        width:100%;
+    }
+}
+input.error, textarea.error{
+    box-shadow: 0 0 10px firebrick;
+}
+.basket-payment .basket-payment__inner{
+    justify-content: center;
+}
+.basket-price__details{
+   text-align:center;
+}

@@ -216,12 +216,52 @@ if (intval($_GET['PAGEN_2']) > 1) {
         )
     ); ?>
 <?endif;?>
-<?if($USER->IsAdmin()):?>
+<?if($USER->IsAdmin() || true):?>
     <script>
-        var lazyLoadInstance = new LazyLoad({
-            elements_selector: ".lazy"
+        // var lazyLoadInstance = new LazyLoad({
+        //     elements_selector: ".lazy"
+        // });
+        // lazyLoadInstance.update();
+
+        window.userActive = false;
+
+        document.addEventListener('mousemove', function () {
+            userActionThrow();
+        }, {once:true});
+        document.addEventListener('keydown', function () {
+            userActionThrow();
+        }, {once:true});
+        document.addEventListener('click', function () {
+            userActionThrow();
+        }, {once:true});
+        document.addEventListener('scroll', function () {
+            userActionThrow();
+        }, {once:true});
+        document.addEventListener('mousewheel', function () {
+            userActionThrow();
+        }, {once:true});
+
+        function userActionThrow(){
+            if(!window.userActive){
+                window.userActive = true;
+
+                document.dispatchEvent(new CustomEvent('user-activated'));
+            }
+        }
+
+        document.addEventListener('user-activated', function () {
+
+            let fn = false;
+            if(window.afterUserActionsScript.length){
+
+                do{
+                    if(typeof fn == 'function') {
+                        fn();
+                    }
+                    fn = window.afterUserActionsScript.pop();
+                }while(fn);
+            }
         });
-        lazyLoadInstance.update();
     </script>
 <?endif;?>
 </body>

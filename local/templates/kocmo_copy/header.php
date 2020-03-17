@@ -74,15 +74,16 @@ define('KOCMO_TEMPLATE_PATH', '/local/templates/kocmo/imposition/build/assets');
     $obAsset->addJs(KOCMO_TEMPLATE_PATH . "/js/main.js");
     $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/jquery.maskedinput.min.js");// https://itchief.ru/lessons/javascript/input-mask-for-html-input-element
     $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/script_costum.js");
+    $obAsset->addJs(SITE_TEMPLATE_PATH . "/js/image-defer.min.js");
     //$obAsset->addJs(SITE_TEMPLATE_PATH . "/js/retailrocket.js");
     //$obAsset->addJs( "https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0");
     ?>
-<!--    <script src="--><?//=SITE_TEMPLATE_PATH . "/js/retailrocket.js"?><!--" async></script>-->
-<!--    <script src="https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0" async></script>-->
+    <script src="<?=SITE_TEMPLATE_PATH . "/js/retailrocket.js"?>" async></script>
+    <script src="https://cdn.sendpulse.com/sp-push-worker-fb.js?ver=2.0" async></script>
     <? $APPLICATION->ShowHead(); ?>
     <script charset="UTF-8" src="//web.webpushs.com/js/push/d4890b712f6fb2ad2f6031f129ac63a7_1.js" async></script>
 
-    <?if($USER->IsAdmin()):?>
+    <?if($USER->IsAdmin() && false):?>
         <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
     <?endif;?>
 </head>
@@ -128,7 +129,6 @@ window.afterUserActionsScript.push(function() {
     });
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/47438272" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-
 <!-- /Yandex.Metrika counter -->
 <!-- Facebook Pixel Code -->
 <script>
@@ -157,12 +157,12 @@ window.afterUserActionsScript.push(function() {
         <div class="header__top">
             <div class="container header__top-inner">
                 <div class="header-place">
-                    <a href="#" class="header-place__item">
+                   <!-- <a href="#" class="header-place__item">
                         <svg width="16" height="21">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-location"></use>
                         </svg>
                         <span>Ваш город:</span> Минск
-                    </a>
+                    </a>-->
                     <a href="/about/stores/" class="header-place__item">
                         <svg width="21" height="21">
                             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-find-shop"></use>
@@ -179,7 +179,6 @@ window.afterUserActionsScript.push(function() {
                 </a>
             </div>
         </div>
-
 
         <div class="header__middle">
             <div class="container header__middle-inner">

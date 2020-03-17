@@ -2,7 +2,9 @@
 <?
 global $OBJ_ITEMS;
 $PROP = array_column($arResult['PROPERTIES'], 'VALUE', 'CODE');
-
+if($arResult['ID']===33536){
+$arResult['CATALOG_QUANTITY']=0;
+}
 ?>
 
 <script type="text/javascript">
@@ -25,7 +27,7 @@ $AVERAGE_RATING = $PROP['AVERAGE_RATING'];
                                         <a href="<?= $photo['src'] ?>"
                                            rel="gallery1" class="fancybox">
                                             <!-- 545x361 -->
-                                            <img src="<?= $photo['src'] ?>"
+                                            <img src="<?= $photo['src']?>"
                                                  alt="<?= $arResult['DETAIL_PICTURE']['ALT'];?>"
                                                 title="<?= $arResult['DETAIL_PICTURE']['TITLE'];?>">
                                         </a>
@@ -390,57 +392,102 @@ $APPLICATION->IncludeComponent(
         "NAME_PRODUCT" => $arResult['~NAME']
     )
 );?>
+<?//pr($arResult, 14);?>
 <script>
-    dataLayer.push({
-        "ecommerce": {
-            "detail": {
-                "products": [
-                    {
-                        "id": <?= $arResult['ID'] ?>,
-                        "name" : '<?= $arResult['NAME'] ?>',
-                        "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
-                    }
-                ]
-            }
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function () {
 
-    gtag('event', 'view_item', {
-        "items": [
-            {
-                "id": <?= $arResult['ID'] ?>,
-                "name" : '<?= $arResult['NAME'] ?>',
-                "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
-            }
-        ]
-    });
-
-    document.querySelector('[data-basket-url]').addEventListener('click', function(){
+        let breadcrumbElements = document.querySelectorAll('.breadcrumbs a');
+        let category = breadcrumbElements[breadcrumbElements.length-1].textContent.trim();
 
         dataLayer.push({
             "ecommerce": {
-                "add": {
+                "detail": {
                     "products": [
                         {
                             "id": <?= $arResult['ID'] ?>,
-                            "name": '<?= $arResult['NAME'] ?>',
+                            "name" : '<?= $arResult['NAME'] ?>',
                             "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
-                            "quantity": document.querySelector('input[name="QUANTITY"]').value
+                            "quantity": document.querySelector('input[name="QUANTITY"]').value,
+                            "brand": '<?=$arResult['PROPERTIES']['MARKA']['VALUE'];?>',
+                            "category": category
                         }
                     ]
                 }
             }
         });
 
-        gtag('event', 'add_to_cart', {
+        gtag('event', 'view_item', {
             "items": [
                 {
                     "id": <?= $arResult['ID'] ?>,
-                    "name": '<?= $arResult['NAME'] ?>',
-                    "quantity": document.querySelector('input[name="QUANTITY"]').value,
+                    "name" : '<?= $arResult['NAME'] ?>',
                     "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+                    "quantity": document.querySelector('input[name="QUANTITY"]').value,
+                    "brand": '<?=$arResult['PROPERTIES']['MARKA']['VALUE'];?>',
+                    "category": category
                 }
             ]
         });
-    }, true);
+
+        //console.log({
+        //    "id": <?//= $arResult['ID'] ?>//,
+        //    "name" : '<?//= $arResult['NAME'] ?>//',
+        //    "price": <?//=$arResult['elemPrice']['PRICE_NEW']?>//,
+        //    "quantity": document.querySelector('input[name="QUANTITY"]').value,
+        //    "brand": '<?//=$arResult['PROPERTIES']['MARKA']['VALUE'];?>//',
+        //    "category": category
+        //});
+
+        document.querySelector('[data-basket-url]').addEventListener('click', function(){
+
+            let breadcrumbElements = document.querySelectorAll('.breadcrumbs a');
+            let category = breadcrumbElements[breadcrumbElements.length-1].textContent.trim();
+
+            dataLayer.push({
+                "ecommerce": {
+                    "add": {
+                        "products": [
+                            {
+                                "id": <?= $arResult['ID'] ?>,
+                                "name": '<?= $arResult['NAME'] ?>',
+                                "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+                                "quantity": document.querySelector('input[name="QUANTITY"]').value,
+                                "brand": '<?=$arResult['PROPERTIES']['MARKA']['VALUE'];?>',
+                                "category": category
+                            }
+                        ]
+                    }
+                }
+            });
+
+            gtag('event', 'add_to_cart', {
+                "items": [
+                    {
+                        "id": <?= $arResult['ID'] ?>,
+                        "name": '<?= $arResult['NAME'] ?>',
+                        "quantity": document.querySelector('input[name="QUANTITY"]').value,
+                        "price": <?=$arResult['elemPrice']['PRICE_NEW']?>,
+                        "brand": '<?=$arResult['PROPERTIES']['MARKA']['VALUE'];?>',
+                        "category": category
+                    }
+                ]
+            });
+        }, true);
+    });
+</script>
+
+ <script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": "<?= $arResult['NAME'] ?>",
+  "image": "<?= $photo['src'] ?>", 
+  "description": "<?$APPLICATION->ShowProperty('description');?>",
+  "offers":{
+    "@type": "Offer",
+	"availability": "https://schema.org/InStock",
+    "priceCurrency": "BYN",
+    "price": "<?= $arResult['elemPrice']['PRICE_NEW'] ?>"
+  }
+}
 </script>

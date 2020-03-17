@@ -22,11 +22,9 @@
 
 
         </div>
-        <? //PR($arResult['PROP'], 17)?>
         <!-- 290px x 226px -->
-        <img src="<?= $arResult['file_img']['src'] ? $arResult['file_img']['src'] : NO_IMG_PATH_225 ?>"
-             width="290" height="226" class="products-item__img"
-             alt="">
+        <img src="<?=WHITE_SQ_330_100?>" data-defer-src="<?= $arResult['file_img']['src'] ? $arResult['file_img']['src'] : NO_IMG_PATH_225 ?>"
+             width="290" height="226" class="products-item__img" alt="">
     </a>
     <div class="products-item__title-wrap">
         <a href="<?= $arResult['MARKA_BRAND']['DETAIL_PAGE_URL'] ?>"
@@ -71,7 +69,6 @@
                     "HIDE_ICONS" => "Y"
                 )
             ); ?>
-            <? /* <img src="/assets/images/temp/stars.png" alt="">*/ ?>
         </div>
         <? if ($arResult['prop']['COUNT_REVIEWS']): ?>
             <a href="<?= $arResult['ITEM']['DETAIL_PAGE_URL'] ?>#reviews" class="products-item__reviews-lnk"><?= $arResult['prop']['COUNT_REVIEWS'] ?> отзыв<?=BITGetDeclNum($arResult['prop']['COUNT_REVIEWS'])?></a>
@@ -94,7 +91,6 @@
                 <span> </span>
             </div>
         <? endif; ?>
-
     </div>
     <div class="products-item__btns">
         <? if ($arResult['minPriceOffer']['PRICE_NEW'] && $arResult['ITEM']['CATALOG_QUANTITY'] > 0) { ?>
@@ -126,5 +122,4 @@
         </a>
     </div>
 </div>
-<? //PR($arResult, 17)?>
 

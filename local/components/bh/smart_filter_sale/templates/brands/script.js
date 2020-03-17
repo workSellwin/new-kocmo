@@ -33,7 +33,7 @@ function NumberElements(data, url) {
             var res = dt['FILTER_AJAX_URL'].replace(/&amp;/g,'&');
             ajaxSmartFilter(res);
             history.pushState(null, null, res)
-        },
+        }
     );
 }
 

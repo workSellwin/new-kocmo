@@ -7,6 +7,8 @@ use Bitrix\Sale;
 
 define('NO_IMG_PATH', '/upload/base/no_image.png');
 define('NO_IMG_PATH_225', '/upload/base/no_image_225.png');
+define('WHITE_SQ_330_100', '/upload/base/white_sq_330_100.jpg');
+define('WHITE_SQ_800_800', '/upload/base/white_sq_800_800.jpg');
 Loader::includeSharewareModule("htc.twigintegrationmodule");
 // Сброс кеша твига при обычном сбросе кеша шаблонов
 $request = Application::getInstance()->getContext()->getRequest();
@@ -22,8 +24,8 @@ Loader::includeModule("sale");
 include_once __DIR__ . '/lib.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/local/modules/lui.kocmo/init.php';
 
-
 AddEventHandler('main', 'OnAdminContextMenuShow', 'OrderDetailAdminContextMenuShow');
+
 function OrderDetailAdminContextMenuShow(&$items)
 {
     global $APPLICATION;
@@ -52,10 +54,14 @@ function OnPageStartActionUpdate()
             AddMessage2Log($e->getMessage());
         }
     }
+    if ($_REQUEST['add1c'] == 'Y' and $_REQUEST['ID'] > 0) {
+        \Lui\Kocmo\Helper\Order::Send1c($_REQUEST['ID']);
+    }
 }
 
 
 AddEventHandler('sale', 'OnSalePayOrder', 'OnSalePayOrderActionUpdateEGift');
+
 function OnSalePayOrderActionUpdateEGift($order_id, $status)
 {
     if ($status == 'Y') {
@@ -108,11 +114,11 @@ function OnSalePayOrderActionUpdateEGift($order_id, $status)
                         //получение номера E-Gift
                         // не реализовано
 
-                        if(!$status_payment['ERROR']){
+                        if (!$status_payment['ERROR']) {
 
                             $arJson = [
-                                'uid_order'=>$order->getField('XML_ID'),
-                                'uid_EGifts'=>$gui,
+                                'uid_order' => $order->getField('XML_ID'),
+                                'uid_EGifts' => $gui,
                             ];
                             $sJson = json_encode($arJson);
                             $ob = new \Lui\Kocmo\Request\Get\EGifts($sJson);
@@ -122,7 +128,7 @@ function OnSalePayOrderActionUpdateEGift($order_id, $status)
                         if ($num_egift['number']) {
 
                             CIBlockElement::SetPropertyValuesEx($id, false, ['OPLACHEN' => 1601, 'SHTRIH_KOD' => $num_egift['number']]);
-                            CIBlockElement::SetPropertyValuesEx($id, false, ['DATE' => date('d.m.Y')]);
+                           // CIBlockElement::SetPropertyValuesEx($id, false, ['DATE' => date('d.m.Y')]);
                             CIBlockElement::SetPropertyValuesEx($id, false, ['ORDER_ID' => $order_id]);
 
                             $arPropCode = ["SHTRIH_KOD", "OPLACHEN", "EMAIL", 'EMAIL_SENT', 'DATE'];
@@ -161,15 +167,20 @@ function OnSalePayOrderActionUpdateEGift($order_id, $status)
     }
 }
 
-if(!function_exists('exchangeChangeQuantity')) {
+AddEventHandler('sale', 'OnSaleComponentOrderOneStepComplete', 'orderCreate');
+
+/*AddEventHandler('kocmo.exchange', 'OnAfterElemUpdateQuantity', 'exchangeChangeQuantity');*/
+
+
+if (!function_exists('exchangeChangeQuantity')) {
     function exchangeChangeQuantity($productId, $quantity, $quantityOld)
     {
         pr([$productId, $quantity, $quantityOld], 17);
         CModule::IncludeModule("iblock");
-        if($quantity > 0){ 
+        if ($quantity > 0) {
             CIBlockElement::SetPropertyValuesEx($productId, false, ['ONLINE_STORE' => 249]);
             CIBlockElement::SetPropertyValuesEx($productId, false, ['UNDER_ORDER' => '']);
-        }else{
+        } else {
             CIBlockElement::SetPropertyValuesEx($productId, false, ['ONLINE_STORE' => '']);
             CIBlockElement::SetPropertyValuesEx($productId, false, ['UNDER_ORDER' => 250]);
         }
@@ -178,14 +189,15 @@ if(!function_exists('exchangeChangeQuantity')) {
 
 AddEventHandler("main", "OnBeforeEventSend", "sendMailNewOrder");
 
-function sendMailNewOrder(&$arFields, &$eventMessage){
+function sendMailNewOrder(&$arFields, &$eventMessage)
+{
 
-    if( $eventMessage['ID'] == 95 && intval($arFields['ORDER_ID']) > 0 ){
+    if ($eventMessage['ID'] == 95 && intval($arFields['ORDER_ID']) > 0) {
 
         $order = Sale\Order::load($arFields['ORDER_ID']);
         $deliveryIds = $order->getDeliveryIdList();
 
-        if( in_array(2, $deliveryIds) || in_array(4, $deliveryIds)){
+        if (in_array(2, $deliveryIds) || in_array(4, $deliveryIds)) {
 
             $propertyCollection = $order->getPropertyCollection();
             $properties = $propertyCollection->getArray()['properties'];
@@ -193,8 +205,8 @@ function sendMailNewOrder(&$arFields, &$eventMessage){
             $deliveryTime = $properties['TIME_OF_DELIVERY'];
             $deliveryTimeStr = $deliveryTime['OPTIONS'][$deliveryTime['VALUE'][0]];
             $arFields['DELIVERY_TIME'] = $deliveryTimeStr;
-            $eventMessage['MESSAGE'] = str_replace('display:none;',' ',$eventMessage['MESSAGE']);
-            $eventMessage['MESSAGE_PHP'] = str_replace('display:none;',' ',$eventMessage['MESSAGE_PHP']);
+            $eventMessage['MESSAGE'] = str_replace('display:none;', ' ', $eventMessage['MESSAGE']);
+            $eventMessage['MESSAGE_PHP'] = str_replace('display:none;', ' ', $eventMessage['MESSAGE_PHP']);
             //file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/MESSAGE_PHP.txt', print_r($eventMessage['MESSAGE_PHP'], true));
         }
 
@@ -209,6 +221,25 @@ function sendMailNewOrder(&$arFields, &$eventMessage){
         file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/TEST0.txt', print_r($eventMessage, true));
         file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/TEST2.txt', print_r($arFields, true));
     }
-
 }
 
+
+AddEventHandler('main', 'OnAdminContextMenuShow', 'OrderDetailAdminContextMenuSho2');
+function OrderDetailAdminContextMenuSho2(&$items)
+{
+    $arReports[] = array(
+        "TEXT" => "Отправить заказ в 1с",
+        "LINK" => "/bitrix/admin/sale_order_view.php?ID=" . $_REQUEST['ID'] . "&lang=ru&add1c=Y"
+
+    );
+
+    if ($_SERVER['REQUEST_METHOD'] == 'GET' && $GLOBALS['APPLICATION']->GetCurPage() == '/bitrix/admin/sale_order_view.php' && $_REQUEST['ID'] > 0) {
+        $items[] = array(
+            "TEXT" => "1C",
+            "LINK" => "button.php",
+            "TITLE" => "1C",
+            "ICON" => "btn_new",
+            "MENU" => $arReports
+        );
+    }
+}

@@ -280,7 +280,8 @@ class Product extends Helper
         }
 
         $prod = $this->getProductFromIBlock($arFields["XML_ID"]);
-
+        //pr($prod, 50);
+        //pr($this->productMatchXmlId, 50);
         $id = 0;
 
         if ($prod === false) {

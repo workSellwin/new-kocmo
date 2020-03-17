@@ -66,6 +66,7 @@
 .filter-elem-price-block{
     width:35%;
     float: left;
+    padding-left: 7px;
 }
 .filter-brand-name{
     font-family: 'Gotham Pro';
@@ -113,9 +114,18 @@
     line-height: 100%;
     color: #8C249F;
 }
+#title-search{
+    z-index:999;
+}
 #filter-other-result, #filter-category-all{
-    height: 17px;
     margin-top: 18px;
+    /*height: 17px;*/
+    height: 28px;
+    border-top: 1px solid rgb(221, 221, 221);
+    text-align: center;
+}
+#filter-category-all .all_result{
+    padding-top: 10px;
 }
 .others_result .bx_item_element, .all_result .bx_item_elemen{
     text-align: center;

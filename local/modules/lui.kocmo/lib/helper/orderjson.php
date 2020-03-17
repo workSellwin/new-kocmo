@@ -45,6 +45,7 @@ class OrderJson
     protected function Run()
     {
         $this->SetOrderID();
+        $this->SetBuyerComment();
         $this->SetDelivery();
         $this->SetPayment();
         $this->SetProperty();
@@ -75,6 +76,10 @@ class OrderJson
     protected function SetOrderID()
     {
         $this->arJson['OrderId'] = $this->obOrder->getId();
+    }
+
+    protected function SetBuyerComment(){
+        $this->arJson['user_description'] = $this->obOrder->getField('USER_DESCRIPTION');
     }
 
     protected function SetDelivery()
@@ -158,7 +163,12 @@ class OrderJson
         if ($this->orderProp['APARTMENT']['value']) {
             $this->arJson['personal']['adress']['flat'] = $this->orderProp['APARTMENT']['value'];
         }
-
+        if ($this->orderProp['ZIP']['value']) {
+            $this->arJson['personal']['adress']['zip'] = $this->orderProp['ZIP']['value'];
+        }
+        if ($this->orderProp['CITY']['value']) {
+            $this->arJson['personal']['adress']['city'] = $this->orderProp['CITY']['value'];
+        }
 
         if ($this->orderProp['CARD_COSMO']['value']) {
             $this->arJson['card'] = $this->orderProp['CARD_COSMO']['value'];

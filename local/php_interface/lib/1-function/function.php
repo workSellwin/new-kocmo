@@ -306,7 +306,6 @@ if (!function_exists("orderCreate")) {
             return true;
         }
 
-
         if (in_array($orderFields['DELIVERY_ID'], $courierDelivery)) {
 
             $DELIVERY_DATA = $propertyCollection->getItemByOrderPropertyId(21);
@@ -332,8 +331,8 @@ if (!function_exists("orderCreate")) {
                 $arSend = $obSmsService->sendSms($phone, $message->getText());
             }
         }
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt3.txt', print_r($messages, true) . "\n", FILE_APPEND);
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt4.txt', print_r($arSend, true) . "\n", FILE_APPEND);
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt5.txt', print_r($messages, true) . "\n", FILE_APPEND);
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/tttt6.txt', print_r($arSend, true) . "\n", FILE_APPEND);
     }
 }
 

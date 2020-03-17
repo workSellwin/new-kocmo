@@ -51,6 +51,8 @@ class SmsForgotPasswdComponent extends MainForgotPasswdComponent
 
                 $_SESSION["system.auth.changepasswd"]["USER_PHONE_NUMBER"] = $_REQUEST['USER_PHONE'];
                 $row = \Bitrix\Main\UserPhoneAuthTable::getList(["filter" => ["=PHONE_NUMBER" => $_REQUEST['USER_PHONE']]])->fetch();
+                //echo '<pre>', var_dump($row), '</pre>';
+                //echo '<pre>', print_r($this->smsCode, true), '</pre>';
 
                 $messages = $this->getSmsMessages($this->smsCode);
 
@@ -58,7 +60,9 @@ class SmsForgotPasswdComponent extends MainForgotPasswdComponent
 
                     $obSmsService = new \CMlifeSmsServices();
                     $arSend = $obSmsService->sendSms($phone, $message->getText(), 0, $this->author);
-
+//                    echo '<pre>', print_r($message->getText(), true), '</pre>';
+//                    echo '<pre>', print_r($arSend, true), '</pre>';
+//                    die();
                     if ($arSend->error) {
                         $this->processingErrors([
                             'TYPE' => 'ERROR',
@@ -94,6 +98,9 @@ class SmsForgotPasswdComponent extends MainForgotPasswdComponent
         }
         return $messages;
     }
+//    public function executeComponent($applyTemplate = true){
+//           parent::executeComponent($applyTemplate);
+//    }
 
     private function getUserIdFromPhone($phone){
 

@@ -1,22 +1,43 @@
 <?php
+use Bitrix\Sale;
+\Bitrix\Main\Loader::includeModule('sale');
+\Bitrix\Main\Loader::includeModule('iblock');
+
 $basket = $orderB->getBasket();
 $basketItems = $basket->getBasketItems();
-//pr($basket,14);
+$products = [];
+
+foreach($basketItems as $item){
+
+    $products[] = [
+        "id" =>  $item->getProductId(),
+        "name" =>  $item->getField('NAME'),
+        "price" =>  $item->getPrice(),
+        "quantity" =>  $item->getQuantity(),
+    ];
+}
+
+$res = CIBlockElement::GetList([], ['ID' => array_keys($products), "IBLOCK_ID" => 2], false, false, ['PROPERTY_MARKA', 'ID', 'NAME', 'SECTION_IBLOCK_ID']);
+
+while( $fields = $res->fetch() ){
+    $products[$fields['ID']]['brand'] = $fields['PROPERTY_MARKA_VALUE'];
+}
 ?>
 <script>
     dataLayer.push({
         "ecommerce": {
             "purchase": {
                 "actionField": {
-                    "id" : "<?=$orderB->getId();?>"
+                    "id": "<?=$orderB->getId();?>"
                 },
                 "products": [
-                    <?foreach($basketItems as $item):?>
+                    <?foreach($products as $product):?>
                     {
-                        "id": <?=$item->getProductId();?>,
-                        "name": <?=$item->getField('NAME');?>,
-                        "price": <?=$item->getPrice();?>,
-                        "quantity": <?=$item->getQuantity();?>,
+                        "id": <?=$product["id"];?>,
+                        "name": '<?=$product["name"];?>',
+                        "brand": '<?=$product["brand"];?>',
+                        "price": <?=$product["price"];?>,
+                        "quantity": <?=$product["quantity"];?>,
                     },
                     <?endforeach;?>
                 ]
@@ -31,19 +52,15 @@ $basketItems = $basket->getBasketItems();
         "currency": "BYN",
         //"shipping": 0,
         "items": [
+            <?foreach($products as $product):?>
             {
-                <?foreach($basketItems as $item):?>
-                "id": <?=$item->getProductId();?>,
-                "name": <?=$item->getField('NAME');?>,
-                //"list_name": "Search Results",
-                //"brand": "Google",
-                //"category": "Apparel/T-Shirts",
-                //"variant": "Black",
-                //"list_position": 1,
-                "quantity": <?=$item->getQuantity();?>,
-                "price": <?=$item->getPrice();?>
-                <?endforeach;?>
+                "id": <?=$product["id"];?>,
+                "name": '<?=$product["name"];?>',
+                "brand": '<?=$product["brand"];?>',
+                "price": <?=$product["price"];?>,
+                "quantity": <?=$product["quantity"];?>,
             },
+            <?endforeach;?>
         ]
     });
 </script>

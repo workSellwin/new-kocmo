@@ -18,7 +18,7 @@ if ($arResult['BANNERS']) {
                     $src = CFile::GetPath($img);
                     ?>
                    <a href="<?=$arBanner['URL']?>" target="<?=$arBanner['URL_TARGET']?>" class="triple-banner__item bordered-inner <?=$arBanner['IMAGE_ALT']?>">
-                        <img src="<?= $src ?>">
+                        <img src="<?=WHITE_SQ_330_100?>" data-defer-src="<?= $src ?>">
                     </a>
                     <?
                 } ?>

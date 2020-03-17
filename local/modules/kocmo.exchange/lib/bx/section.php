@@ -123,7 +123,7 @@ class Section extends Helper
             'IBLOCK_SECTION_ID' => $this->conformityHash[$from1CArr[$this->arParams['PARENT_ID']]],
             'IBLOCK_ID' => $this->catalogId,
             'NAME' => $from1CArr[$this->arParams['NAME']],
-            'SORT' => 500,
+            //'SORT' => 500,
             'XML_ID' => $from1CArr[$this->arParams['ID']],
             'DEPTH_LEVEL' => $from1CArr[$this->arParams['DEPTH_LEVEL']],
             'CODE' => \CUtil::translit($from1CArr[$this->arParams['NAME']], 'ru')

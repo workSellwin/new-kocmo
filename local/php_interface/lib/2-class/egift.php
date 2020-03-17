@@ -79,7 +79,7 @@ class EGift
             <td align="center" height="22">
                 <font face="Calibri, Tahoma, Verdana, Segoe, sans-serif"
                       style="font-size:20px;font-style: normal;font-weight: normal;color:#222222;line-height: 22px;">';
-            $HTML_FIO .= 'Уважаемый(ая) '.$FIO.'!</font>';
+            $HTML_FIO .= $FIO.'</font>';//$HTML_FIO .= 'Уважаемый(ая) '.$FIO.'!</font>';
             $HTML_FIO .= '</td></tr>';
         }
 

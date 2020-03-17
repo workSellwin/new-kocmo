@@ -5,8 +5,6 @@ if (empty($arResult["CATEGORIES"]) || !$arResult['CATEGORIES_ITEMS_EXISTS'])
 $items = $arResult["CATEGORIES"][1]['ITEMS'];
 $itemsId = array_column($items, 'ITEM_ID');
 ?>
-<? //pr($arResult["ELEMENTS"], 14); ?>
-<? // pr($arResult["CATEGORIES"], 14); ?>
 <div class="bx_searche">
     <? if (count($arResult["SECTIONS"])): ?>
         <ul class="search-section-list">
@@ -102,11 +100,11 @@ $itemsId = array_column($items, 'ITEM_ID');
                             <div style="clear:both;"></div>
                         </div>
                     <? else: ?>
-                        <div id="filter-other-result">
+                       <!-- <div id="filter-other-result">
                             <div class="bx_item_block others_result">
                                 <div class="bx_img_element"></div>
                                 <div class="bx_item_element">
-                                    <a href="<?= $arItem["URL"] ?>">
+                                    <a href="<?/*= $arItem["URL"] */?>">
                                         <span>ПОКАЗАТЬ ВСЕ РЕЗУЛЬТАТЫ ПОИСКА</span>
                                         <svg width="21" height="8">
                                             <use class="svg-arrow-right" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -116,7 +114,7 @@ $itemsId = array_column($items, 'ITEM_ID');
                                 </div>
                                 <div style="clear:both;"></div>
                             </div>
-                        </div>
+                        </div>-->
                     <? endif; ?>
                 <? endforeach; ?>
             </div>

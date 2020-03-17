@@ -145,9 +145,21 @@ if($this->StartResultCache(false, 'v9'.($arParams["CACHE_GROUPS"]? $USER->GetGro
 				"ACTIVE_DATE" => "Y",
 				"ACTIVE" => "Y",
                 '!PROPERTY_PRICE_SORT_2'=>false,
-                'ID' => $arParams['PROD_SALE_ID']
+                'ID' => $arParams['PROD_SALE_ID'],
 			);
-			//PR($arParams['PROD_SALE_ID']);
+
+            if($arParams['BREND']){
+                $arElementFilter['PROPERTY_MARKA_VALUE'] = $arParams['BREND'];
+            }
+
+            if($arParams['SUB_FILTER']['ID']){
+                $arElementFilter['ID'] = $arParams['SUB_FILTER']['ID'];
+            }
+
+            if(!empty($arParams['FILTER_PROPERTY_AJAX'])){
+                $arElementFilter = array_merge($arElementFilter, $arParams['FILTER_PROPERTY_AJAX']);
+            }
+
 			if ('Y' == $this->arParams['HIDE_NOT_AVAILABLE'])
 				$arElementFilter['CATALOG_AVAILABLE'] = 'Y';
 
@@ -915,6 +927,15 @@ if (
 	$APPLICATION->AddHeadString('<meta property="ya:interaction" content="XML_FORM" />');
 	$APPLICATION->AddHeadString('<meta property="ya:interaction:url" content="'.CHTTP::urn2uri($exportUrl).'" />');
 }
+
+
+
+if(!empty($arParams['FILTER_PROPERTY_AJAX'])){
+    $GLOBALS['APPLICATION']->RestartBuffer();
+    echo json_encode($arResult['ITEMS']);
+    die();
+}
+
 
 if ($arParams["XML_EXPORT"] === "Y" && $_REQUEST["mode"] === "xml")
 {

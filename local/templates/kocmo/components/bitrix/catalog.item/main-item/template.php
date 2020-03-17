@@ -101,7 +101,7 @@
     </div>
     <div class="products-item__btns">
         <? if ($arResult['minPriceOffer']['PRICE_NEW'] && $arResult['ITEM']['CATALOG_QUANTITY'] > 0) { ?>
-            <a href="#"
+            <a href="javascript:void(0);"
                id="<?= $arResult['ID'] ?>"
                onclick="productsItemAdd(<?= $arResult['minPriceOffer']['PRODUCT_ID'] ?>);ga('send', 'event', 'v_korz2', 'btn_v_korz2'); yaCounter47438272.reachGoal('v_korz2'); return true;"
                class="btn btn--transparent products-item__add prod-items-id_<?= $arResult['minPriceOffer']['PRODUCT_ID'] ?> "
@@ -109,7 +109,7 @@
                 <svg width="25" height="25">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-basket"></use>
                 </svg>
-                <? if ($arResult['CATALOG_QUANTITY'] > 0): ?>
+                <? if ($arResult["ITEM"]['CATALOG_QUANTITY'] > 0 ): ?>
                     <span><?= $arResult['IS_BASKET'] == 'N' ? 'В корзину' : 'Перейти в корзину' ?></span>
                 <? else: ?>
                     <span>Предзаказ</span>

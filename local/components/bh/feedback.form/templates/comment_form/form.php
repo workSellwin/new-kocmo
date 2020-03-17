@@ -2,22 +2,34 @@
 $HB = new highloadApi(3);
 $Selectoptionprofile = $HB->getElementHighload(array(), array('UF_SORT' => 'ASC'));
 $arSelectoptionprofile = array();
-foreach ($Selectoptionprofile as $val) {
+foreach ($Selectoptionprofile as &$val) {
     //Возвраст
     if ($val['UF_TYPE'] == 1) {
-        $arSelectoptionprofile['AGE_' . $ALX][] = $val;
+        if($val['ID'] == $arParams['DATA_USER']['UF_AGE']){
+            $val['ACTIVE'] = 'Y';
+        }
+        $arSelectoptionprofile['AGE_' . $ALX][$val['ID']] = $val;
     }
     //Цвет глаз
     if ($val['UF_TYPE'] == 2) {
-        $arSelectoptionprofile['EYE_COLOR_' . $ALX][] = $val;
+        if($val['ID'] == $arParams['DATA_USER']['UF_EYE_COLOR']){
+            $val['ACTIVE'] = 'Y';
+        }
+        $arSelectoptionprofile['EYE_COLOR_' . $ALX][$val['ID']] = $val;
     }
     //Цвет волос
     if ($val['UF_TYPE'] == 3) {
-        $arSelectoptionprofile['HAIR_COLOR_' . $ALX][] = $val;
+        if($val['ID'] == $arParams['DATA_USER']['UF_HAIR']){
+            $val['ACTIVE'] = 'Y';
+        }
+        $arSelectoptionprofile['HAIR_COLOR_' . $ALX][$val['ID']] = $val;
     }
     //Тип кожи
     if ($val['UF_TYPE'] == 4) {
-        $arSelectoptionprofile['SKIN_TYPE_' . $ALX][] = $val;
+        if($val['ID'] == $arParams['DATA_USER']['UF_SKIN']){
+            $val['ACTIVE'] = 'Y';
+        }
+        $arSelectoptionprofile['SKIN_TYPE_' . $ALX][$val['ID']] = $val;
     }
 
 }
@@ -151,12 +163,12 @@ foreach ($Selectoptionprofile as $val) {
 
 
                                 <select name="FIELDS[<?= $arField["CODE"] ?>]" class="js_custom-select">
-                                    <option value="not_val" selected>Выберите <?= $arField["NAME"] ?></option>
+                                    <option value="not_val" >Выберите <?= $arField["NAME"] ?></option>
 
                                     <? foreach ($arSelectoptionprofile as $k => $val): ?>
                                         <? if ($k == $arField["CODE"]): ?>
-                                            <? foreach ($val as $va): ?>
-                                                <option value="<?= $va['UF_XML_ID'] ?>"><?= $va['UF_NAME'] ?></option>
+                                            <? foreach ($val as $va):?>
+                                                <option  <?=$va['ACTIVE'] ? 'selected' : ''?>  value="<?= $va['UF_XML_ID'] ?>"><?= $va['UF_NAME'] ?></option>
                                             <? endforeach; ?>
                                         <? endif; ?>
                                     <? endforeach; ?>
@@ -186,7 +198,7 @@ foreach ($Selectoptionprofile as $val) {
                                // $className = "fa fa-star reviews-prod";
                                 ?>
                             <i class="fa fa-star-o reviews-prod"
-                               title="<? echo $name ?>"
+
                                data-rating-num="<?=$i?>"
                                onmouseover="myJCFlatVote(this, true)"
                                onmouseout="myJCFlatVote(this, false)"
@@ -389,27 +401,6 @@ foreach ($Selectoptionprofile as $val) {
     }
 
 
-  /*  $('boby').on('click', '.reviews__form-submit', function () {
-        var id_form = "f_feedback_<?//= $ALX ?>";
-        var flag = true;
-        console.log(id_form);
-        $("#"+id_form+" .required").each(function(){
-
-            if($(this).hasClass('.error_pole')){
-                flag = false;
-                $('.afbf_error_text_main').show();
-            }else{
-
-                $('.afbf_error_text_main').hide();
-            }
-        });
-
-        if(flag){
-            return true;
-        }else{
-            return false;
-        }
-    })*/
 
 
 </script>

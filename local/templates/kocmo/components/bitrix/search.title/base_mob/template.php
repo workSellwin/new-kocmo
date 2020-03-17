@@ -21,10 +21,14 @@ $CONTAINER_ID = trim($arParams["~CONTAINER_ID"]);
 if (strlen($CONTAINER_ID) <= 0)
     $CONTAINER_ID = "mob-search";
 $CONTAINER_ID = CUtil::JSEscape($CONTAINER_ID);
-
+?>
+<script>
+    const sheet = new CSSStyleSheet();
+</script>
+<?
 if ($arParams["SHOW_INPUT"] !== "N"):?>
 <div id="popup-mob-search" style="display: none;">
-    <a href="#" onclick="$.fancybox.close();return false;" class="popup__fancybox-close" style="z-index:1;"></a>
+    <a href="#" onclick="$.fancybox.close();/*sheet.deleteRule(0);document.adoptedStyleSheets = [sheet];*/return false;" class="popup__fancybox-close" style="z-index:1;"></a>
     <form id="<? echo $CONTAINER_ID ?>" class="field-bordered"
           method="post" action="<? echo $arResult["FORM_ACTION"] ?>" name="">
         <button type="submit" value="" class="header-search__submit">
@@ -46,37 +50,43 @@ if ($arParams["SHOW_INPUT"] !== "N"):?>
             'INPUT_ID': '<?echo $INPUT_ID?>',
             'MIN_QUERY_LEN': 2
         });
+
+        setTimeout( function () {
+            $("[href='#popup-mob-search']").fancybox({
+                afterShow: function( instance, slide ) {
+                    sheet.insertRule('.title-search-result {display:block !important;}', 0);
+                    document.adoptedStyleSheets = [sheet];
+                },
+                beforeClose: function( instance, slide ) {
+                    sheet.deleteRule(0);document.adoptedStyleSheets = [sheet]
+                }
+            })
+        }, 500);
+
     });
 
     BX.addCustomEvent('onAjaxSuccess', function(){
 
         if(~arguments[1].data.indexOf('<?=$INPUT_ID?>')){
 
-
-            $('#mob-filter-category-1').jScrollPane();
+             $('#mob-filter-category-1').jScrollPane();
 
             if($.fancybox.isOpen){
-                let results = document.querySelectorAll('.title-search-result');
-                
-                if(results){
-                    results.forEach(function (element) {
-                        element.style.bottom = 0;
-                    })
+                let result = document.querySelector('.title-search-result');
+
+                if(result){
+                    result.style.bottom = 0;
                 }
 
                 setCategory1Height();
             }
             else{
-                let results = document.querySelectorAll('.title-search-result');
-
-                if(results){
-                    results.forEach(function (element) {
-                        element.style.bottom = '';
-                    })
-                }
+                let result = document.querySelector('.title-search-result');
+                result.style.bottom = '';
             }
         }
     });
+
     window.addEventListener("resize", function() {
         setCategory1Height();
         $('#mob-filter-category-1').jScrollPane();
@@ -89,24 +99,16 @@ if ($arParams["SHOW_INPUT"] !== "N"):?>
         let sectionUl = document.querySelector('.bx_searche .search-section-list');
 
         if(mobFilterCategoryAll && sectionUl) {
+
             let mobFilterCategoryAllStyle = window.getComputedStyle(mobFilterCategoryAll, null);
             let sectionUlStyle = window.getComputedStyle(sectionUl, null);
-
-
             let blockHeight = document.querySelector('.bx_searche').offsetHeight;
-
             let topBlockHeight = sectionUl.offsetHeight
                 + parseFloat(sectionUlStyle.marginTop) + parseFloat(sectionUlStyle.marginBottom);
-
             let bottomBlockHeight = mobFilterCategoryAll.offsetHeight
                 + parseFloat(mobFilterCategoryAllStyle.marginTop) + parseFloat(mobFilterCategoryAllStyle.marginBottom);
 
             mobFilterCategory1.style.height = (blockHeight - topBlockHeight - bottomBlockHeight) + 'px';
-
-            console.log('mobFilterCategory1', mobFilterCategory1);
-            console.log('blockHeight', blockHeight);
-            console.log('topBlockHeight', topBlockHeight);
-            console.log('topBlockHeight', bottomBlockHeight);
         }
     }
 </script>

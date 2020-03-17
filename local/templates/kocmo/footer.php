@@ -184,7 +184,7 @@ if (intval($_GET['PAGEN_2']) > 1) {
 ///require_once $_SERVER['DOCUMENT_ROOT'] . '/include/first-visit.php';
 ?>
 <?if($_GET['tsearch'] == 'new'):?>
-    <?$APPLICATION->IncludeComponent("bitrix:search.title", "base_mob",Array(
+    <?$APPLICATION->IncludeComponent("bitrix:search.title", "base_mob", Array(
             "SHOW_INPUT" => "Y",
             "INPUT_ID" => "title-search-input-mob",
             "CONTAINER_ID" => "mob-search",
@@ -200,7 +200,7 @@ if (intval($_GET['PAGEN_2']) > 1) {
             "NUM_CATEGORIES" => "6",
             "TOP_COUNT" => "20",
             "ORDER" => "date",
-            "USE_LANGUAGE_GUESS" => "Y",
+            "USE_LANGUAGE_GUESS" => "N",
             "CHECK_DATES" => "Y",
             "SHOW_OTHERS" => "Y",
             "CATEGORY_1_TITLE" => "Каталог",
@@ -221,13 +221,46 @@ if (intval($_GET['PAGEN_2']) > 1) {
     )
 ); ?>
 <?endif;?>
-<?if($USER->IsAdmin()):?>
-    <script>
-        var lazyLoadInstance = new LazyLoad({
-            elements_selector: ".lazy"
-        });
-        lazyLoadInstance.update();
-    </script>
-<?endif;?>
+<script>
+    window.userActive = false;
+
+    document.addEventListener('mousemove', function () {
+        userActionThrow();
+    }, {once:true});
+    document.addEventListener('keydown', function () {
+        userActionThrow();
+    }, {once:true});
+    document.addEventListener('click', function () {
+        userActionThrow();
+    }, {once:true});
+    document.addEventListener('scroll', function () {
+        userActionThrow();
+    }, {once:true});
+    document.addEventListener('mousewheel', function () {
+        userActionThrow();
+    }, {once:true});
+
+    function userActionThrow(){
+        if(!window.userActive){
+            window.userActive = true;
+
+            document.dispatchEvent(new CustomEvent('user-activated'));
+        }
+    }
+
+    document.addEventListener('user-activated', function () {
+
+        let fn = false;
+        if(window.afterUserActionsScript.length){
+
+            do{
+                if(typeof fn == 'function') {
+                    fn();
+                }
+                fn = window.afterUserActionsScript.pop();
+            }while(fn);
+        }
+    });
+</script>
 </body>
 </html>

@@ -62,6 +62,6 @@ use Bitrix\Main\Localization\Loc;
 <div class="form-recovery__footer">
     <b>Не получается восстановить пароль?</b>
 
-    <p><a href="#" class="link">Напишите нам</a> и наши сотрудники обязательно помогут Вам
+    <p><a href="mailto:info@kocmo.by" class="link">Напишите нам</a> и наши сотрудники обязательно помогут Вам
         с любой проблемой.</p>
 </div>

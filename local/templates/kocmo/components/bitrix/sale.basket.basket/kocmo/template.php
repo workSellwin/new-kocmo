@@ -152,7 +152,8 @@
                             {
                                 "id": obj_items[productXmlId]["PRODUCT_ID"],
                                 "name": obj_items[productXmlId]["NAME"],
-                                "quantity": itemBlock.querySelector('.counter__input').value
+                                "quantity": itemBlock.querySelector('.counter__input').value,
+                                "price" : obj_items[productXmlId]["PRICE_NEW"],
                             }
                         ]
                     }
@@ -165,6 +166,7 @@
                         "id": obj_items[productXmlId]["PRODUCT_ID"],
                         "name": obj_items[productXmlId]["NAME"],
                         "quantity": itemBlock.querySelector('.counter__input').value,
+                        "price" : obj_items[productXmlId]["PRICE_NEW"],
                     }
                 ]
             });

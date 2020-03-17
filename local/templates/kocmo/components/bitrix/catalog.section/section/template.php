@@ -281,9 +281,11 @@ $containerName = 'container-' . $navParams['NavNum']; ?>
 
         byBtn[i].addEventListener('click', function(event){
             let product = event.target.closest('.products-item');
-            let name = product.querySelector('.products-item__title').textContent;
+            let name = product.querySelector('.products-item__description').textContent.trim();
             let price = parseInt(product.querySelector('.products-item__price').textContent, 10);
             let id = this.dataset.prodId;
+            let brand = product.querySelector('.products-item__title').textContent.trim();
+            let category = document.querySelector('span.breadcrumbs__lnk').textContent.trim();
 
             dataLayer.push({
                 "ecommerce": {
@@ -292,6 +294,8 @@ $containerName = 'container-' . $navParams['NavNum']; ?>
                             {
                                 "id": id,
                                 "name": name,
+                                "brand": brand,
+                                "category": category,
                                 "price": price,
                                 "quantity": 1
                             }
@@ -305,20 +309,13 @@ $containerName = 'container-' . $navParams['NavNum']; ?>
                     {
                         "id": id,
                         "name": name,
+                        "brand": brand,
+                        "category": category,
                         "price": price,
                         "quantity": 1
                     }
                 ]
             });
-
-            // if(!window.litleBasketItems){
-            //     window.litleBasketItems = {};
-            // }
-            // window.litleBasketItems[id] = {
-            //     PRODUCT_ID: id,
-            //     NAME: name,
-            //     QUANTITY: 1
-            // };
         });
     }
 </script>

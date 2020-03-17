@@ -16,6 +16,14 @@ $request = $context->getRequest();
 $this->addExternalJs($templateFolder . '/order_ajax.js');
 
 $arDeliveryParams = [
+    '5' => [
+        'additional' => $arResult['BLOCK_PROPS']['2'],
+        'info' => [
+            'title' => 'Стоимость: согласно тарифам',
+            'class-subtitle' => 'basket-shipment__item-info-second-title',
+            'subtitle' => 'При заказе от 40 руб – бесплатно',
+        ],
+    ],
     '4' => [
         'additional' => $arResult['BLOCK_PROPS']['2'],
         'info' => [
@@ -134,7 +142,7 @@ if (strlen($request->get('ORDER_ID')) > 0) {
                     <? $param = $arDeliveryParams[$id] ?>
                     <? $info = $param['info'] ?>
                     <? $additional = $param['additional'] ?>
-                    <div class="basket-shipment__item-wrap basket-radio-wrap">
+                    <div class="basket-shipment__item-wrap basket-radio-wrap" data-delivery-id="<?=$id?>">
                         <div class="basket-shipment__item">
                             <label class="radio js_radio">
                                 <input type="radio" class="js_basket-radio"
@@ -160,6 +168,7 @@ if (strlen($request->get('ORDER_ID')) > 0) {
                                 </div>
                             </label>
                         </div>
+                        <?if($id != 5):?>
                         <div class="basket-shipment__item-additional" style="display: none;">
                             <? foreach ($additional as $prop) { ?>
                                 <? switch ($prop['TYPE']) {
@@ -203,6 +212,7 @@ if (strlen($request->get('ORDER_ID')) > 0) {
                                 </div>
                             <? } ?>
                         </div>
+                        <?endif;?>
                     </div>
                 <? } ?>
             </div>
@@ -269,7 +279,11 @@ if (strlen($request->get('ORDER_ID')) > 0) {
 
     <div class="basket-payment container">
         <div class="basket-payment__title">Оплата:</div>
-
+        <?
+        if($_REQUEST['AJAX_PAYMENT'] == 'Y') {
+            $APPLICATION->RestartBuffer();
+        }
+        ?>
         <div class="basket-payment__inner">
             <? foreach ($arPaySystem as $paySystem) { ?>
                 <?
@@ -289,26 +303,31 @@ if (strlen($request->get('ORDER_ID')) > 0) {
                 </label>
             <? } ?>
         </div>
+        <?
+        if($_REQUEST['AJAX_PAYMENT'] == 'Y') {
+            die();
+        }
+        ?>
 
         <div class="basket-payment__logo" style="display: none">
             <div class="basket-payment__logo-item">
-                <img src="/assets/images/basket-payment/Visa.png" alt="">
+                <img src="<?=KOCMO_TEMPLATE_PATH?>/images/basket-payment/Visa.png" alt="">
             </div>
 
             <div class="basket-payment__logo-item">
-                <img src="/assets/images/basket-payment/mc.png" alt="">
+                <img src="<?=KOCMO_TEMPLATE_PATH?>/images/basket-payment/mc.png" alt="">
             </div>
 
             <div class="basket-payment__logo-item">
-                <img src="/assets/images/basket-payment/webpay.png" alt="">
+                <img src="<?=KOCMO_TEMPLATE_PATH?>/images/basket-payment/webpay.png" alt="">
             </div>
 
             <div class="basket-payment__logo-item">
-                <img src="/assets/images/basket-payment/raschet.png" alt="">
+                <img src="<?=KOCMO_TEMPLATE_PATH?>/images/basket-payment/raschet.png" alt="">
             </div>
 
             <div class="basket-payment__logo-item">
-                <img src="/assets/images/basket-payment/blc.png" alt="">
+                <img src="<?=KOCMO_TEMPLATE_PATH?>/images/basket-payment/blc.png" alt="">
             </div>
         </div>
     </div>

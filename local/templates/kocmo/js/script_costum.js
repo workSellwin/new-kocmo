@@ -139,6 +139,11 @@ function productsItemAdd(PRODUCT_ID) {
             function onAjaxSuccess(response) {
                 if (response) {
                     item['IS_BASKET'] = 'Y';
+                    //new 5.03.2020
+                    document.querySelectorAll('[data-prod-id="' + PRODUCT_ID + '"][data-in-basket="N"]').forEach(function (elem) {
+                        elem.dataset.inBasket = 'Y';
+                    });
+                    //end 5.03.2020
                     item['BTN_TEXT'] = 'Перейти в корзину';
                     btnItem(PRODUCT_ID);
                     addToBasketTracker(PRODUCT_ID);

@@ -21,9 +21,14 @@ if (isset($_REQUEST['subscribe_form']) && $_REQUEST['subscribe_form'] == "Y") {
         $subscr = new CSubscription;
         //can add without authorization
         $ID = $subscr->Add($arFields);
+
         if ($ID > 0) {
             CSubscription::Authorize($ID);
-            echo '<span style="color: green">Спасибо за подписку!</span>';
+            $arEventFields = [
+                "EMAIL" => $PROP['EMAIL']['VALUE'],
+            ];
+            CEvent::Send('SUBSCRIBE_CONFIRM', 's1', $arEventFields);
+            echo '<span style="color: green">Спасибо за подписку!</span><br><span style="color: green">Потвердите подписку<span>';
         } else {
             $strWarning = "<span style='color: red'>Ошибка при добавлении подписки: " . $subscr->LAST_ERROR . "</span>";
             echo $strWarning;

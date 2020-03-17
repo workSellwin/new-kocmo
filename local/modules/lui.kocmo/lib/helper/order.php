@@ -217,21 +217,32 @@ class Order
     public static function Send1c($orderId)
     {
         $order = \Bitrix\Sale\Order::load($orderId);
-        if (is_object($order)) {
+
+        $propertyCollection = $order->getPropertyCollection();
+        //bug fix
+        $somePropValue = $propertyCollection->getItemByOrderPropertyId(20);
+        $id1C = $somePropValue->getValue();
+        //end bug fix
+        if (is_object($order) && empty($id1C) ) {
             $ob = new \Lui\Kocmo\Request\Order($orderId);
             $data = $ob->Run();
+            if($_REQUEST['add1c'] == 'Y'){
+                PR($data,true);
+            }
             $uid = $data['UID'];
-            $order->setField('XML_ID', $uid);
-            $propertyCollection = $order->getPropertyCollection();
-            $propertyValue = \Bitrix\Sale\PropertyValue::create($propertyCollection, [
-                'ID' => 20,
-                'NAME' => 'ID 1C',
-                'TYPE' => 'STRING',
-                'CODE' => 'UID',
-            ]);
-            $propertyValue->setField('VALUE', $uid);
-            $propertyCollection->addItem($propertyValue);
-            $order->save();
+            if($uid){
+                $order->setField('XML_ID', $uid);
+                //$propertyCollection = $order->getPropertyCollection();
+                $propertyValue = \Bitrix\Sale\PropertyValue::create($propertyCollection, [
+                    'ID' => 20,
+                    'NAME' => 'ID 1C',
+                    'TYPE' => 'STRING',
+                    'CODE' => 'UID',
+                ]);
+                $propertyValue->setField('VALUE', $uid);
+                $propertyCollection->addItem($propertyValue);
+                $order->save();
+            }
         }
     }
 

@@ -1,5 +1,10 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
-<?//pr($arResult["ERRORS"], 14);?>
+<?
+$street = empty($arResult['USER_STREET']) ? "" : $arResult['USER_STREET'];
+$house = empty($arResult['USER_HOUSE']) ? "" : $arResult['USER_HOUSE'];
+$building = empty($arResult['USER_BUILDING']) ? "" : $arResult['USER_BUILDING'];
+$apartment = empty($arResult['USER_APARTMENT']) ? "" : $arResult['USER_APARTMENT'];
+?>
 <?if( count($arResult["ERRORS"]) ):?>
 <div class="errors-block">
     <?foreach( $arResult["ERRORS"] as $error):?>
@@ -8,7 +13,8 @@
 </div>
 <?endif;?>
 
-<form action="<?= $APPLICATION->GetCurPage(); ?>" method="POST" class="cabinet-profile-form">
+<form action="<?= $APPLICATION->GetCurPage(); ?>?test=Y" method="POST" class="cabinet-profile-form">
+
     <div class="cabinet-profile container">
         <div class="cabinet-profile__title">Личные данные</div>
 
@@ -50,46 +56,57 @@
                 </div>
             </div>
 
+
             <div class="cabinet-profile__fields-row">
-                <div class="cabinet-profile__fields-outer-half">
-                    <div class="cabinet-profile__fields-half">
-                        <div class="form-field">
-                            <select name="user-city" class="js_custom-select">
-                                <option value="Минск" selected>Минск</option>
-                            </select>
-                        </div>
-                    </div>
-                    <?
-                    $street = empty($arResult['USER_STREET']) ? "" : $arResult['USER_STREET'];
-                    $house = empty($arResult['USER_HOUSE']) ? "" : $arResult['USER_HOUSE'];
-                    $building = empty($arResult['USER_BUILDING']) ? "" : $arResult['USER_BUILDING'];
-                    $apartment = empty($arResult['USER_APARTMENT']) ? "" : $arResult['USER_APARTMENT'];
-                    ?>
-                    <div class="cabinet-profile__fields-half">
-                        <div class="form-field">
-                            <input name="user-street" value="<?= $street ?>" class="form-field__input" type="text"
-                                   placeholder="Введите вашу улицу">
-                        </div>
+                <div class="cabinet-profile__fields-half">
+                    <div class="form-field">
+                        <input name="user-city" list="user-city-list" value="<?= $arResult['AR_USER']['PERSONAL_CITY'] ?>"
+                               class="form-field__input" placeholder="Введите населённый пункт">
+                        <datalist id="user-city-list" style="background: rgb(250, 249, 251);">
+                            <?foreach($arResult['BX_LOCATIONS'] as $location):?>
+                                <option value="<?=$location['NAME_RU']?>, <?=$location['PARENT_RU_NAME']?>"></option>
+                            <?endforeach;?>
+                        </datalist>
                     </div>
                 </div>
 
+                <div class="cabinet-profile__fields-half">
+                    <div class="form-field">
+                        <input name="user-street" value="<?= $street ?>" class="form-field__input" type="text"
+                               placeholder="Введите вашу улицу">
+                    </div>
+                </div>
+            </div>
+
+            <div class="cabinet-profile__fields-row">
+
                 <div class="cabinet-profile__fields-outer-half">
-                    <div class="cabinet-profile__fields-third">
+                    <div class="cabinet-profile__fields-half">
                         <div class="form-field">
                             <input name="user-house" value="<?= $house ?>" class="form-field__input" type="text"
                                    placeholder="Дом">
                         </div>
                     </div>
-                    <div class="cabinet-profile__fields-third">
+                    <div class="cabinet-profile__fields-half">
                         <div class="form-field">
                             <input name="user-building" value="<?= $building ?>" class="form-field__input" type="text"
                                    placeholder="Корпус">
                         </div>
                     </div>
-                    <div class="cabinet-profile__fields-third">
+                </div>
+                <div class="cabinet-profile__fields-outer-half">
+                    <div class="cabinet-profile__fields-half">
                         <div class="form-field">
                             <input name="user-apartment" value="<?= $apartment ?>" class="form-field__input" type="text"
                                    placeholder="Квартира">
+                        </div>
+                    </div>
+                    <div class="cabinet-profile__fields-half">
+                        <div class="form-field">
+                            <input name="user-zip" value="<?= $arResult['AR_USER']['PERSONAL_ZIP'] ?>"
+                                   class="form-field__input"
+                                   type="text"
+                                   placeholder="Почтовый индекс">
                         </div>
                     </div>
                 </div>
@@ -97,9 +114,8 @@
 
             <div class="cabinet-profile__fields-row">
                 <label class="checkbox js_checkbox cabinet-profile__fields-checkbox">
-                    <input type="checkbox"
-                           <? if (!empty($arResult['UF_NEWS_SUBSCRIBE'])): ?>checked="checked"<? endif; ?>
-                           name="user-news-subscribe">
+                    <input type="checkbox" name="user-news-subscribe"
+                           <? if (!empty($arResult['UF_NEWS_SUBSCRIBE'])): ?>checked="checked"<? endif; ?>>
                     Подписка на новости косметики и парфюмерии
                 </label>
             </div>

@@ -62,6 +62,7 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
         'user-lastname' => 'LAST_NAME',
         'user-email' => 'EMAIL',
         'user-phone' => 'PERSONAL_PHONE',
+        'user-zip' => 'PERSONAL_ZIP',
         'user-city' => 'PERSONAL_CITY',
         'user-street' => 'PERSONAL_STREET_1',
         'user-house' => 'PERSONAL_HOUSE',
@@ -148,4 +149,25 @@ if( isset($_POST) && isset($_POST['submit']) && count($_POST)){
 }
 if( strpos($arResult['AR_USER']['PERSONAL_PHONE'], '+' !== 0) ) {
     $arResult['AR_USER']['PERSONAL_PHONE'] = '+' . $arResult['AR_USER']['PERSONAL_PHONE'];//чтобы не конфликтовало с placeholder'ом
+}
+
+$res = \Bitrix\Sale\Location\LocationTable::getList(array(
+    'filter' => array('=NAME.LANGUAGE_ID' => LANGUAGE_ID, '=PARENT.NAME.LANGUAGE_ID' => LANGUAGE_ID),
+    'select' => array('*', 'NAME_RU' => 'NAME.NAME', 'TYPE_CODE' => 'TYPE.CODE', 'PARENT_RU_' => 'PARENT.NAME')
+));
+
+$arResult['BX_LOCATIONS'] = [];
+
+while( ($item = $res->fetch()))
+{
+    if($item['DEPTH_LEVEL'] < 3 || !in_array($item['TYPE_ID'], [5, 6])){
+        continue;
+    }
+
+    $arResult['BX_LOCATIONS'][] = [
+        'ID' => $item['ID'],
+        'CODE' => $item['CODE'],
+        'NAME_RU' => $item['NAME_RU'],
+        'PARENT_RU_NAME' => $item['PARENT_RU_NAME'],
+    ];
 }

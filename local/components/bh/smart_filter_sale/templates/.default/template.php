@@ -717,11 +717,11 @@ if (isset($templateData['TEMPLATE_THEME'])) {
 
 
                 <?
-                if(isset($_REQUEST["available_yes"])){
+                if (isset($_REQUEST["available_yes"])) {
                     $checked["available_yes"]['NAME'] = 'В интернет-магазине';
                     $checked["available_yes"]['CONTROL_NAME'] = 'available_yes';
                 }
-                if(isset($_REQUEST["available_not"])){
+                if (isset($_REQUEST["available_not"])) {
                     $checked["available_not"]['NAME'] = 'Под заказ';
                     $checked["available_not"]['CONTROL_NAME'] = 'available_not';
                 }
@@ -729,32 +729,32 @@ if (isset($templateData['TEMPLATE_THEME'])) {
                 ?>
 
                 <?
-                /*foreach ($arResult["ITEMS"] as $key => $arItem): */?><!--
-                    <?/* if (count($arItem["VALUES"]) == 1):
+                /*foreach ($arResult["ITEMS"] as $key => $arItem): */ ?><!--
+                    <? /* if (count($arItem["VALUES"]) == 1):
                         foreach ($arItem["VALUES"] as $val => $ar):
                             //PR($ar);
                             if ($ar["CHECKED"]):
                                 $checked[$ar["HTML_VALUE_ALT"]]['NAME'] = $ar["VALUE"];
                                 $checked[$ar["HTML_VALUE_ALT"]]['CONTROL_NAME'] = $ar["CONTROL_NAME"];
-                            endif */?>
+                            endif */ ?>
 
-                            <label data-role="label_<?/*= $ar["CONTROL_ID"] */?>"
+                            <label data-role="label_<? /*= $ar["CONTROL_ID"] */ ?>"
                                    class="js_checkbox checkbox">
 
                                 <input
                                         type="checkbox"
-                                        value="<?/* echo $ar["HTML_VALUE"] */?>"
-                                        name="<?/* echo $ar["CONTROL_NAME"] */?>"
-                                        id="<?/* echo $ar["CONTROL_ID"] */?>"
+                                        value="<? /* echo $ar["HTML_VALUE"] */ ?>"
+                                        name="<? /* echo $ar["CONTROL_NAME"] */ ?>"
+                                        id="<? /* echo $ar["CONTROL_ID"] */ ?>"
                                         onclick="changeSmartFilter(this)"
-                                    <?/* echo $ar["CHECKED"] ? 'checked="checked"' : '' */?>
+                                    <? /* echo $ar["CHECKED"] ? 'checked="checked"' : '' */ ?>
                                 />
-                                <?/*= $arItem['NAME'] */?>
+                                <? /*= $arItem['NAME'] */ ?>
                             </label>
 
-                        <?/* endforeach; */?>
-                    <?/* endif; */?>
-                --><?/* endforeach; */?>
+                        <? /* endforeach; */ ?>
+                    <? /* endif; */ ?>
+                --><? /* endforeach; */ ?>
             </div>
 
             <div class="category-filter__inner-wrap">
@@ -791,45 +791,56 @@ if (isset($templateData['TEMPLATE_THEME'])) {
                         </div>
                     <? else: ?>
                         <? if (!empty($arItem["VALUES"])): ?>
-                            <?// if (count($arItem["VALUES"]) > 1): ?>
-                                <div class="category-filter__item">
-                                    <div class="category-filter__item-title js_filter-accordion">
-                                        <?= $arItem['NAME'] ?>
-                                    </div>
-                                    <div class="category-filter__item-inner">
-                                        <div class="category-filter__item-inner--scroll  js_filter-scroll">
-                                            <? foreach ($arItem["VALUES"] as $val => $ar):
-                                                if ($ar["CHECKED"]):
-                                                    $checked[$ar["HTML_VALUE_ALT"]]['NAME'] = $ar["VALUE"];
-                                                    $checked[$ar["HTML_VALUE_ALT"]]['CONTROL_NAME'] = $ar["CONTROL_NAME"];
-                                                endif ?>
-                                                <label class="checkbox js_checkbox">
-                                                    <input
-                                                            type="checkbox"
-                                                            value="<? echo $ar["HTML_VALUE"] ?>"
-                                                            name="<? echo $ar["CONTROL_NAME"] ?>"
-                                                            id="<? echo $ar["CONTROL_ID"] ?>"
-                                                        <? echo $ar["CHECKED"] ? 'checked="checked"' : '' ?>
-                                                            onclick="changeSmartFilter(this)"
-                                                    /> <?= $ar['VALUE'] ?>
-                                                </label>
-                                            <? endforeach; ?>
-                                        </div>
+                            <? // if (count($arItem["VALUES"]) > 1): ?>
+                            <div class="category-filter__item">
+                                <div class="category-filter__item-title js_filter-accordion">
+                                    <?= $arItem['NAME'] ?>
+                                </div>
+                                <div class="category-filter__item-inner">
+                                    <div class="category-filter__item-inner--scroll  js_filter-scroll" id="prop_<?=$key?>">
+                                        <? foreach ($arItem["VALUES"] as $val => $ar):
+                                            if ($ar["CHECKED"]):
+                                                $checked[$ar["HTML_VALUE_ALT"]]['NAME'] = $ar["VALUE"];
+                                                $checked[$ar["HTML_VALUE_ALT"]]['CONTROL_NAME'] = $ar["CONTROL_NAME"];
+                                            endif ?>
+                                            <label class="checkbox js_checkbox" id="ajax_<?=$ar["CONTROL_ID"]?>">
+                                                <input
+                                                        type="checkbox"
+                                                        value="<? echo $ar["HTML_VALUE"] ?>"
+                                                        name="<? echo $ar["CONTROL_NAME"] ?>"
+                                                        id="<? echo $ar["CONTROL_ID"] ?>"
+                                                    <? echo $ar["CHECKED"] ? 'checked="checked"' : '' ?>
+                                                        onclick="changeSmartFilter(this)"
+                                                /> <?= $ar['VALUE'] ?>
+                                            </label>
+                                        <? endforeach; ?>
                                     </div>
                                 </div>
-                            <?// endif; ?>
+                            </div>
+                            <? // endif; ?>
                         <? endif; ?>
                     <? endif; ?>
                     <? // endif; ?>
                 <? endforeach; ?>
             </div>
         </div>
+
         <div class="category-filter__sort custom-select-wrap">
             <span class="category-filter__sort-title">Сортировать по:</span>
+            <? $arFilterSort = [
+                'price_desc' => 'Сначала дорогие',
+                'price_asc' => 'Сначала дешёвые',
+                'az_asc' => 'A-Z',
+                'az_desc' => 'Z-A',
+            ]; ?>
             <select name="filter_sort" onchange="changeSmartFilter(this)" class="js_custom-filter-select">
-                <? /*<option value="sort_default" selected>умолчанию</option>*/ ?>
-                <option value="sort_increase">A-Z</option>
-                <option value="sort_decrease">Z-A</option>
+                <? foreach ($arFilterSort as $key => $val): ?>
+                    <? if ($key == $_SESSION['FILTER_SORT']['SELECT_FILTER_SORT']): ?>
+                        <option selected value="<?= $key ?>"><?= $val ?></option>
+                    <? else: ?>
+                        <option value="<?= $key ?>"><?= $val ?></option>
+                    <? endif; ?>
+                <? endforeach; ?>
             </select>
         </div>
 

@@ -8,17 +8,24 @@ $(document).ready(function () {
     });
 
     $('body').on('change', '.basket-additional .js_radio', function () {
+
         if ($('.basket-price__item.delivery').length) {
+
             var val = $(this).parents('.basket-shipment__item').find(':checked').val();
-            var sum = parseFloat($('.basket-price .basket-price__total-sum').text());
+            var sum = parseFloat(document.querySelector('.basket-price .basket-price__total-sum').dataset.total);
             var delivery = parseFloat($('.basket-price__item.delivery .basket-price__item-sum').text());
-            if (val == 3) {
+
+            if (val == 3 || val == 5) {
+
                 $('.basket-price__item.delivery').hide();
                 var itog = sum - delivery;
                 $('.basket-price .basket-price__total-sum').text(itog.toFixed(2));
-            } else {
+            }
+            else {
+
                 $('.basket-price__item.delivery').show();
-                var itog = sum + delivery;
+                //var itog = sum + delivery;
+                var itog = sum;
                 $('.basket-price .basket-price__total-sum').text(itog.toFixed(2))
             }
         }
@@ -176,7 +183,6 @@ function changeCalendar() {
 
 }
 
-
 function SetIntervalOrder(i1, i2, i3, reset) {
     if (reset) {
         resetProp23();
@@ -249,5 +255,154 @@ function changeYear() {
     for (var i = 0; i < links.length; i++) {
         var func = links[i].attributes['onclick'].value;
         $('[onclick="' + func + '"]').attr({'onclick': func + '; changeCalendar();',}); //повесим событие на выбор года
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    var shipmentWrap = document.querySelector('.basket-shipment__inner');
+
+    if(shipmentWrap) {
+        shipmentWrap.addEventListener('click', function (event) {
+
+            if (!event.target.classList.contains('js_basket-radio')) {
+                return false;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/cart/?AJAX_PAYMENT=Y&test=Y');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.querySelector('.basket-payment__inner').outerHTML = xhr.responseText;
+                    MainJs.init({
+                        fullWidthSlider: '.js_full-width-slider',
+                        basketRadio: '.js_basket-radio',
+                    });
+                }
+            };
+            var deliveryId = event.target.value;
+            xhr.send("AJAX_PAYMENT=" + encodeURIComponent('Y') + "&test=" + encodeURIComponent('Y')
+                + "&DELIVERY_ID=" + encodeURIComponent(deliveryId));
+        });
+    }
+
+    $('[name="ORDER_PROP_37"]').inputmask('999999');
+
+    var locations = document.querySelector('[list="ORDER_PROP_5"]');
+
+    if(locations){
+        locations.addEventListener('input', function (event) {
+
+            if(event.target.value.length >= 3){
+
+                let val = event.target.value;
+
+                setTimeout(function () {
+
+                    if(val !== locations.value){
+                        //console.log(val);
+                        return;
+                    }
+
+                    let dataList = document.getElementById('ORDER_PROP_5');
+                    dataList.innerHTML = "";
+
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/ajax/getLocation.php?loc=' + event.target.value);
+
+                    xhr.onload = function () {
+
+                        if (xhr.status === 200 && xhr.responseText) {
+
+                            let resData = JSON.parse(xhr.responseText);
+
+                            if( resData ){
+
+                                for( let key in resData){
+                                    let option = document.createElement('option');
+                                    option.value = resData[key]['NAME_RU'] + ', ' + resData[key]['PARENT_RU_NAME'];
+                                    //option.textContent = resData[key]['PARENT_RU_NAME'];
+                                    dataList.appendChild(option);
+                                }
+                            }
+                        }
+                    };
+                    xhr.send();
+
+                }, 500);
+            }
+        })
+    }
+
+    if(window.DELIVERY_ID && window.DELIVERY_ID == 5) {
+
+        let step2_btn = document.querySelector('.step2-submit');
+
+        if (step2_btn) {
+            step2_btn.addEventListener('click', function (event) {
+
+                let zipNode = document.querySelector('[name="ORDER_PROP_37"]');
+                let zip = parseInt(zipNode.value) + '';
+
+                if(zip && zip.length === 6){
+                    zipNode.classList.remove('error');
+                }
+                else{
+                    zipNode.classList.add('error');
+                    smoothScroll('personal_data');
+                    //alert('Необходимо заполнить почтовый индекс');
+                    event.preventDefault();
+                }
+                //event.preventDefault();
+            }, true)
+        }
+    }
+});
+
+function currentYPosition() {
+    // Firefox, Chrome, Opera, Safari
+    if (self.pageYOffset) return self.pageYOffset;
+    // Internet Explorer 6 - standards mode
+    if (document.documentElement && document.documentElement.scrollTop)
+        return document.documentElement.scrollTop;
+    // Internet Explorer 6, 7 and 8
+    if (document.body.scrollTop) return document.body.scrollTop;
+    return 0;
+}
+
+
+function elmYPosition(eID) {
+    var elm = document.getElementById(eID);
+    var y = elm.offsetTop;
+    var node = elm;
+    while (node.offsetParent && node.offsetParent != document.body) {
+        node = node.offsetParent;
+        y += node.offsetTop;
+    } return y;
+}
+
+
+function smoothScroll(eID) {
+    var startY = currentYPosition();
+    var stopY = elmYPosition(eID);
+    var distance = stopY > startY ? stopY - startY : startY - stopY;
+    if (distance < 100) {
+        scrollTo(0, stopY); return;
+    }
+    var speed = Math.round(distance / 100);
+    if (speed >= 20) speed = 20;
+    var step = Math.round(distance / 25);
+    var leapY = stopY > startY ? startY + step : startY - step;
+    var timer = 0;
+    if (stopY > startY) {
+        for ( var i=startY; i<stopY; i+=step ) {
+            setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+            leapY += step; if (leapY > stopY) leapY = stopY; timer++;
+        } return;
+    }
+    for ( var i=startY; i>stopY; i-=step ) {
+        setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+        leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
     }
 }

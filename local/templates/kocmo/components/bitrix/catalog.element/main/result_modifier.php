@@ -571,7 +571,6 @@ if ($arResult['DETAIL_PICTURE']['ID']):
     $arResult['RES']['PHOTO_SMAL'][] = CFile::ResizeImageGet($arResult['DETAIL_PICTURE']['ID'], array('width' => 82, 'height' => 54), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 endif;
 
-
 $arFilter = Array("IBLOCK_ID" => $arParams['IBLOCK_ID'], 'ID' => $arResult['ID']);
 $res = CIBlockElement::GetList(Array("SORT" => "ASC"), $arFilter, false, false, Array("ID", "IBLOCK_ID", "NAME", "SHOW_COUNTER", "PROPERTY_MORE_PHOTO"));
 while ($ar_fields = $res->GetNextElement()) {

@@ -22,8 +22,8 @@
     /*bottom:0;*/
 }
 
-.bx_item_block{
-    font-size: 14px;
+#mob-filter-category-1 .bx_item_block{
+    font-size: 12px;
     padding-bottom:5px;
     margin-bottom: 5px;
     border-bottom:1px solid #ddd;
@@ -108,7 +108,8 @@
     letter-spacing: 0.04em;
     color: rgb(135, 138, 138);
 }
-.others_result .bx_item_element a{
+.others_result .bx_item_element a,
+.all_result .bx_item_element a{
     font-family: 'Gotham Pro';
     font-style: normal;
     font-weight: normal;
@@ -160,7 +161,7 @@
 
 #popup-mob-search{
     width:100%;
-    /*margin: 30px;*/
+    /*padding-right: 30px;*/
 }
 #mob-search{
     position:relative;
@@ -272,7 +273,7 @@ body .fancybox-inner{
     width: auto !important;
 }
 
-.jspContainer{
+.title-search-result .jspContainer{
     height:100% !important;
 }
 #popup-mob-search .popup__fancybox-close{
@@ -288,6 +289,7 @@ body .fancybox-inner{
     font-size:12px;
 }
 
-/*.title-search-result{*/
-/*    display:block !important;*/
-/*}*/
+.title-search-result{
+    /*display:block !important;*/
+    position: fixed !important;
+}

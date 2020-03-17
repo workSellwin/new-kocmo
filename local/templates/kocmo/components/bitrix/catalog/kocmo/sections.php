@@ -96,7 +96,7 @@ $APPLICATION->IncludeComponent(
     )
 ); ?>
 
-<div id="AJAX_FILTER_CONTAINER">
+<div id="AJAX_FILTER_CONTAINER" data="ddd">
 
 
     <?

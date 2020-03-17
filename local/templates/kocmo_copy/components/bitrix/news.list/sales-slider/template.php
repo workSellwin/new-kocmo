@@ -24,7 +24,7 @@ $this->setFrameMode(true);
                     ?>
                     <div class="swiper-slide" id="<?= $this->GetEditAreaId($arItem['ID']); ?>">
                         <img width="1047" height="444"
-                             src="<?= $arItem["PREVIEW_PICTURE"]["SRC"] ?>"
+                             src="<?=WHITE_SQ_330_100?>" data-defer-src="<?= $arItem["PREVIEW_PICTURE"]["SRC"] ?>"
                              alt="<?= $arItem["PREVIEW_PICTURE"]["ALT"] ?>"
                              title="<?= $arItem["PREVIEW_PICTURE"]["TITLE"] ?>">
 

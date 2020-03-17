@@ -13226,6 +13226,8 @@ h2.form-title {
   width: -moz-calc(33.3333% - 12px);
   width: calc(33.3333% - 12px);
 }
+
+.send-order-fields__four {width: calc(25% - 8px);}
 .send-order-fields .form-field__input {
   padding-right: 19px;
   font-size: 0.9375rem;

@@ -47,11 +47,9 @@ if (!$val =& $BLOCK_PROPS_1['SURNAME']['VALUE']) {
 if (!$val =& $BLOCK_PROPS_1['EMAIL']['VALUE']) {
     $val = $arUser['EMAIL'];
 }
-
 if (!$val =& $BLOCK_PROPS_1['PHONE']['VALUE']) {
     $val = $arUser['PERSONAL_PHONE'];
 }
-
 if (!$val =& $BLOCK_PROPS_7['STREET']['VALUE']) {
     $val = $arUser['ADRESS']['STREET'];
 }
@@ -65,6 +63,12 @@ if (!$val =& $BLOCK_PROPS_7['APARTMENT']['VALUE']) {
     $val = $arUser['ADRESS']['APARTMENT'];
 }
 
+if (!$val =& $BLOCK_PROPS_7['ZIP']['VALUE']) {
+    $val = $arUser['PERSONAL_ZIP'];
+}
+if (!$val =& $BLOCK_PROPS_7['CITY']['VALUE']) {
+    $val = $arUser['PERSONAL_CITY'];
+}
 
 $BLOCK_PROPS_6 =& $arResult['BLOCK_PROPS'][6];
 $BLOCK_PRICE =& $arResult['BLOCK_PRICE'];
@@ -137,3 +141,24 @@ foreach ($arNoDate as $dt){
 }
 $arResult['NO-DATA-JSON']=$arBaseDate;
 
+$arResult['BX_LOCATIONS'] = [];
+
+if(!empty($arResult['ORDER_PROP']['USER_PROPS_Y'][5]['VALUE'])) {
+    $res = \Bitrix\Sale\Location\LocationTable::getList(array(
+        'filter' => array('NAME_RU' => '%' . $arResult['ORDER_PROP']['USER_PROPS_Y'][5]['VALUE'] . '%','=NAME.LANGUAGE_ID' => LANGUAGE_ID, '=PARENT.NAME.LANGUAGE_ID' => LANGUAGE_ID),
+        'select' => array('*', 'NAME_RU' => 'NAME.NAME', 'TYPE_CODE' => 'TYPE.CODE', 'PARENT_RU_' => 'PARENT.NAME')
+    ));
+
+    while (($item = $res->fetch())) {
+        if ($item['DEPTH_LEVEL'] < 3 || !in_array($item['TYPE_ID'], [5, 6])) {
+            continue;
+        }
+
+        $arResult['BX_LOCATIONS'][] = [
+            'ID' => $item['ID'],
+            'CODE' => $item['CODE'],
+            'NAME_RU' => $item['NAME_RU'],
+            'PARENT_RU_NAME' => $item['PARENT_RU_NAME'],
+        ];
+    }
+}

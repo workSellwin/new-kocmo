@@ -1,5 +1,4 @@
 <? if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
-
 /**
  * @var array $arParams
  * @var array $arResult
@@ -23,7 +22,6 @@ $BLOCK_PROPS_7[] = $BLOCK_PROPS_71;
 $BLOCK_PROPS_7[] = $BLOCK_PROPS_72;
 $BLOCK_PROPS_1 = $BLOCK_PROPS['1'];
 
-
 $PAY_SYSTEM = [];
 foreach ($arResult['PAY_SYSTEM'] as $arData) {
     if ($arData['CHECKED'] == 'Y') {
@@ -42,7 +40,7 @@ foreach ($arResult['DELIVERY'] as $arData) {
 }
 $arDeliveryParams = $arDeliveryParams[$DELIVERY['ID']];
 
-
+//pr($DELIVERY, 14);
 ?>
 <div class="form-wrap">
     <form action="" method="post" id="bx-soa-order-form" enctype="multipart/form-data">
@@ -56,7 +54,7 @@ $arDeliveryParams = $arDeliveryParams[$DELIVERY['ID']];
         <input type="hidden" name="SITE_ID" value="<?= SITE_ID ?>">
         <input type="hidden" name="STEP" value="2">
         <input type="hidden" name="soa-action" value="saveOrderAjax">
-        <h2 class="form-title container">Персональные данные</h2>
+        <h2 class="form-title container" id="personal_data">Персональные данные</h2>
 
         <div class="send-order-fields container">
             <? foreach (array_chunk($BLOCK_PROPS_1, 2) as $arB) { ?>
@@ -87,46 +85,65 @@ $arDeliveryParams = $arDeliveryParams[$DELIVERY['ID']];
                 </div>
             <? } ?>
 
-            <div class="send-order-fields__row">
-                <? foreach ($BLOCK_PROPS_7 as $b7) { ?>
-                    <div class="send-order-fields__outer-half">
-                        <? $class = count($b7) == 2 ? 'send-order-fields__half' : 'send-order-fields__third' ?>
+            <? foreach ($BLOCK_PROPS_7 as $b7) { ?>
+
+                <div class="send-order-fields__row">
+                    <?
+                    switch(count($b7)){
+                        case 2:
+                            $class = 'send-order-fields__half';
+                            break;
+                        case 3:
+                            $class = 'send-order-fields__third';
+                            break;
+                        case 4:
+                            $class = 'send-order-fields__four';
+                            break;
+                        default:
+                            $class = '';
+                    }
+                    ?>
                         <? foreach ($b7 as $prop) { ?>
                             <div class="<?= $class ?>">
                                 <div class="form-field">
 
-                                    <? switch ($prop['TYPE']) {
-                                        case 'SELECT':
+                                    <? switch ($prop['CODE']) {
+                                        case 'CITY':
                                             ?>
-                                            <select name="ORDER_PROP_<?= $prop['ID'] ?>" class="js_custom-select">
-                                                <option value="" ><?= $prop['NAME'] ?></option>
-                                                <?
-                                                foreach ($prop['VARIANTS'] as  $opt) {
-                                                    ?>
-                                                    <option <?= $opt['SELECTED'] ? 'selected' : '' ?> value="<?= $opt['ID'] ?>"><?= $opt['NAME'] ?></option>
-                                                    <?
-                                                } ?>
-                                            </select>
+                                            <input name="ORDER_PROP_<?= $prop['ID'] ?>" list="ORDER_PROP_<?= $prop['ID'] ?>"
+                                                   value="<?= $prop['VALUE'] ?>" class="form-field__input"
+                                                   placeholder="Введите населённый пункт">
+                                            <datalist id="ORDER_PROP_<?= $prop['ID'] ?>" style="background: rgb(250, 249, 251);">
+                                                <?foreach($arResult['BX_LOCATIONS'] as $location):?>
+                                                    <option value="<?=$location['NAME_RU']?>, <?=$location['PARENT_RU_NAME']?>"></option>
+                                                <?endforeach;?>
+                                            </datalist>
                                             <?
                                             break;
-                                        case 'TEXT':
+                                        default:
                                             ?>
                                             <input name="ORDER_PROP_<?= $prop['ID'] ?>"
                                                    value="<?= $prop['VALUE'] ?>"
                                                    class="form-field__input"
                                                    type="text"
-                                                   placeholder="<?= $prop['NAME'] ?>">
+                                                   placeholder="<?= $prop['NAME'] ?>"
+                                                   data-type="<?= $prop['CODE'] ?>">
                                             <?
                                             break;
                                     } ?>
                                 </div>
                             </div>
                         <? } ?>
+                </div>
+            <? } ?>
+            <div class="send-order-fields__row">
+
+                    <div class="form-field" style="width:100%;">
+                        <textarea name="ORDER_DESCRIPTION" cols="30" rows="5" placeholder="Комментарий к заказу"></textarea>
                     </div>
-                <? } ?>
+
             </div>
         </div>
-
         <hr>
         <? if ($arBlockPrice = $arResult['BLOCK_PRICE']) { ?>
             <div class="send-order-details container">
@@ -159,7 +176,7 @@ $arDeliveryParams = $arDeliveryParams[$DELIVERY['ID']];
                                 </div>
                             </div>
                         </div>
-                    <? } elseif ($arDeliveryParams) { ?>
+                    <? } elseif ($arDeliveryParams && $DELIVERY['ID'] != 5) { ?>
                         <? $additional = $arDeliveryParams['additional']; ?>
                         <div class="send-order-details__shipment">
                             Ваш заказ доставят:
@@ -259,7 +276,7 @@ $arDeliveryParams = $arDeliveryParams[$DELIVERY['ID']];
                     <span class="basket-price__total-currency">руб</span>
                 </div>
 
-                <button type="submit" onclick="ga('send', 'event', 'pod_zakaz', 'btn_pod_zakaz'); yaCounter47438272.reachGoal('pod_zakaz'); return true;" class="basket-footer__submit btn">
+                <button type="submit" onclick="ga('send', 'event', 'pod_zakaz', 'btn_pod_zakaz'); yaCounter47438272.reachGoal('pod_zakaz'); return true;" class="basket-footer__submit btn step2-submit">
                     ПОДТВЕРДИТЬ ЗАКАЗ
 
                     <svg width="26" height="16">
@@ -270,3 +287,6 @@ $arDeliveryParams = $arDeliveryParams[$DELIVERY['ID']];
         </div>
     </form>
 </div>
+<script>
+    var DELIVERY_ID = <?= (int)$DELIVERY['ID'];?>;
+</script>
